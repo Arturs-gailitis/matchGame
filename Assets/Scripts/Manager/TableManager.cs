@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Builds the cars for a level inside the Table child of the Grid prefab.
 /// </summary>
-public sealed class GridManager : MonoBehaviour
+public sealed class TableManager : MonoBehaviour
 {
     [SerializeField] private Table table;
     [SerializeField] private GameObject carPrefab;
@@ -15,6 +15,15 @@ public sealed class GridManager : MonoBehaviour
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
 
     private readonly List<GameObject> spawnedCars = new List<GameObject>();
+    private readonly Dictionary<Vector2Int, CarInteraction> carsByCell = new Dictionary<Vector2Int, CarInteraction>();
+
+    private static readonly Vector2Int[] AdjacentDirections =
+    {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right
+    };
 
     private void Start()
     {
@@ -27,7 +36,7 @@ public sealed class GridManager : MonoBehaviour
 
         if (table == null || carPrefab == null || carSpriteConfig == null)
         {
-            Debug.LogError("GridManager: something is missing.", this);
+            Debug.LogError("TableManager: something is missing.", this);
             return;
         }
 
@@ -52,13 +61,13 @@ public sealed class GridManager : MonoBehaviour
         {
             if (!table.IsValidCell(car.x, car.y))
             {
-                Debug.LogError($"GridManager: car {car.id} has invalid cell ({car.x}, {car.y}).", this);
+                Debug.LogError($"TableManager: car {car.id} has invalid cell ({car.x}, {car.y}).", this);
                 continue;
             }
 
             if (!configsByType.TryGetValue(car.type, out CarSpriteConfig config))
             {
-                Debug.LogError($"GridManager: no CarSpriteConfig exists for car type {car.type}.", this);
+                Debug.LogError($"TableManager: no CarSpriteConfig exists for car type {car.type}.", this);
                 continue;
             }
 
@@ -66,12 +75,14 @@ public sealed class GridManager : MonoBehaviour
 
             if (sprite == null)
             {
-                Debug.LogError($"GridManager: no sprite was assigned for '{config.spriteName}'.", this);
+                Debug.LogError($"TableManager: no sprite was assigned for '{config.spriteName}'.", this);
                 continue;
             }
 
             CreateCar(car, sprite);
         }
+
+        RefreshCarStates();
     }
 
     private Dictionary<int, CarSpriteConfig> CreateConfigLookup()
@@ -122,7 +133,13 @@ public sealed class GridManager : MonoBehaviour
         spawnedCars.Add(carObject);
 
         RectTransform carRect = carObject.GetComponent<RectTransform>();
-        Image image = carObject.GetComponent<Image>();
+        Image image = carObject.GetComponentInChildren<Image>(true);
+        CarInteraction carInteraction = carObject.GetComponent<CarInteraction>();
+
+        Vector2Int cell = new Vector2Int(car.x, car.y);
+
+        carsByCell.Add(cell, carInteraction);
+        carInteraction.RemovalRequested += HandleCarRemoval;
 
         carRect.anchorMin = new Vector2(0.5f, 0.5f);
         carRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -134,8 +151,58 @@ public sealed class GridManager : MonoBehaviour
         carRect.localScale = Vector3.one * carScale;
 
         image.sprite = sprite;
-        image.preserveAspect = true;
-        image.raycastTarget = false;
+        image.preserveAspect = false;
+        image.raycastTarget = true;
+    }
+
+    private void HandleCarRemoval(CarInteraction carInteraction)
+    {
+        Vector2Int occupiedCell = default;
+        bool cellFound = false;
+
+        foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
+        {
+            if (entry.Value == carInteraction)
+            {
+                occupiedCell = entry.Key;
+                cellFound = true;
+                break;
+            }
+        }
+
+        if (cellFound)
+        {
+            carsByCell.Remove(occupiedCell);
+        }
+
+        carInteraction.RemovalRequested -= HandleCarRemoval;
+        spawnedCars.Remove(carInteraction.gameObject);
+        RefreshCarStates();
+    }
+
+    private void RefreshCarStates()
+    {
+        foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
+        {
+            CarInteraction.CarState state = entry.Key.y == 0 || HasFreeAdjacentCell(entry.Key) ? CarInteraction.CarState.Removable : CarInteraction.CarState.Blocked;
+
+            entry.Value.SetState(state);
+        }
+    }
+
+    private bool HasFreeAdjacentCell(Vector2Int cell)
+    {
+        foreach (Vector2Int direction in AdjacentDirections)
+        {
+            Vector2Int adjacentCell = cell + direction;
+
+            if (table.IsValidCell(adjacentCell.x, adjacentCell.y) && !carsByCell.ContainsKey(adjacentCell))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ClearGrid()
@@ -144,10 +211,18 @@ public sealed class GridManager : MonoBehaviour
         {
             if (car != null)
             {
+                CarInteraction carInteraction = car.GetComponent<CarInteraction>();
+
+                if (carInteraction != null)
+                {
+                    carInteraction.RemovalRequested -= HandleCarRemoval;
+                }
+
                 Destroy(car);
             }
         }
 
         spawnedCars.Clear();
+        carsByCell.Clear();
     }
 }
