@@ -1,0 +1,1131 @@
+fileFormatVersion: 2
+guid: 1fa3f4924be070b4483e8b476850ba87
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6789974302026733439
+    second: car-green_0
+  - first:
+      213: 7897133771506879256
+    second: car-green_1
+  - first:
+      213: 4265548814934450845
+    second: car-green_2
+  - first:
+      213: -8680151718199095822
+    second: car-green_3
+  - first:
+      213: -638490951492433655
+    second: car-green_4
+  - first:
+      213: 7366084732792265449
+    second: car-green_5
+  - first:
+      213: -1079389140749791649
+    second: car-green_6
+  - first:
+      213: -6281913248543602420
+    second: car-green_7
+  - first:
+      213: 1715850409245172608
+    second: car-green_8
+  - first:
+      213: 9203674627909412821
+    second: car-green_9
+  - first:
+      213: -3866887936716238573
+    second: car-green_10
+  - first:
+      213: 4670270410285353784
+    second: car-green_11
+  - first:
+      213: -764319495236538108
+    second: car-green_12
+  - first:
+      213: -793372152477069429
+    second: car-green_13
+  - first:
+      213: -284161719688442451
+    second: car-green_14
+  - first:
+      213: 3467556060700304509
+    second: car-green_15
+  - first:
+      213: -522180218355932367
+    second: car-green_16
+  - first:
+      213: -1498823661812916025
+    second: car-green_17
+  - first:
+      213: -6450776833775282850
+    second: car-green_18
+  - first:
+      213: 4442039400174901172
+    second: car-green_19
+  - first:
+      213: 8472377714146695908
+    second: car-green_20
+  - first:
+      213: 7270192933836737501
+    second: car-green_21
+  - first:
+      213: -5592676954155653844
+    second: car-green_22
+  - first:
+      213: -5039015446023213221
+    second: car-green_23
+  - first:
+      213: -324815689418005256
+    second: car-green_24
+  - first:
+      213: -6685832333547278579
+    second: car-green_25
+  - first:
+      213: 2383189920934024435
+    second: car-green_26
+  - first:
+      213: -3784565027385472386
+    second: car-green_27
+  - first:
+      213: -4020391021128374552
+    second: car-green_28
+  - first:
+      213: 7966413216393698624
+    second: car-green_29
+  - first:
+      213: -3884266292065685754
+    second: car-green_30
+  - first:
+      213: -5247175395134749119
+    second: car-green_31
+  - first:
+      213: 8676047653397777829
+    second: car-green_32
+  - first:
+      213: 5939487442069319984
+    second: car-green_33
+  - first:
+      213: 5890623439287115110
+    second: car-green_34
+  - first:
+      213: 3450941220997559730
+    second: car-green_35
+  - first:
+      213: 4576772454369081762
+    second: car-green_36
+  - first:
+      213: 747063836320478201
+    second: car-green_37
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: car-green_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 49
+        width: 1289
+        height: 1128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f77955227a5da3e50800000000000000
+      internalID: 6789974302026733439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_1
+      rect:
+        serializedVersion: 2
+        x: 874
+        y: 1171
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81b886a0351489d60800000000000000
+      internalID: 7897133771506879256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_2
+      rect:
+        serializedVersion: 2
+        x: 894
+        y: 1157
+        width: 35
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d92a14e1c06423b30800000000000000
+      internalID: 4265548814934450845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_3
+      rect:
+        serializedVersion: 2
+        x: 798
+        y: 1149
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fd0f307008e98780800000000000000
+      internalID: -8680151718199095822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_4
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 1117
+        width: 13
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9090efbccdf9327f0800000000000000
+      internalID: -638490951492433655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_5
+      rect:
+        serializedVersion: 2
+        x: 1094
+        y: 912
+        width: 41
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ead28b8907993660800000000000000
+      internalID: 7366084732792265449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_6
+      rect:
+        serializedVersion: 2
+        x: 1134
+        y: 913
+        width: 7
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5ec13b9b4d3501f0800000000000000
+      internalID: -1079389140749791649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_7
+      rect:
+        serializedVersion: 2
+        x: 1184
+        y: 842
+        width: 77
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c090db6fe2922d8a0800000000000000
+      internalID: -6281913248543602420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_8
+      rect:
+        serializedVersion: 2
+        x: 1124
+        y: 875
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08364c23bdcefc710800000000000000
+      internalID: 1715850409245172608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_9
+      rect:
+        serializedVersion: 2
+        x: 1114
+        y: 801
+        width: 49
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d7e0d89f450abf70800000000000000
+      internalID: 9203674627909412821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_10
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 783
+        width: 25
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31119c1c8ed065ac0800000000000000
+      internalID: -3866887936716238573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_11
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 764
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83b831aa13220d040800000000000000
+      internalID: 4670270410285353784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_12
+      rect:
+        serializedVersion: 2
+        x: 1232
+        y: 736
+        width: 37
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4013587f7779465f0800000000000000
+      internalID: -764319495236538108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 642
+        width: 15
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8fcae41b306df4f0800000000000000
+      internalID: -793372152477069429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_14
+      rect:
+        serializedVersion: 2
+        x: 1196
+        y: 624
+        width: 31
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dadc437eb647e0cf0800000000000000
+      internalID: -284161719688442451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 564
+        width: 5
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d746bc48ddb3f1030800000000000000
+      internalID: 3467556060700304509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_16
+      rect:
+        serializedVersion: 2
+        x: 1246
+        y: 566
+        width: 27
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 133a828abd7d0c8f0800000000000000
+      internalID: -522180218355932367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_17
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 420
+        width: 19
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c0e0b812db133be0800000000000000
+      internalID: -1498823661812916025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_18
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 218
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e555189b5ac3a76a0800000000000000
+      internalID: -6450776833775282850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_19
+      rect:
+        serializedVersion: 2
+        x: 533
+        y: 0
+        width: 190
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b7d6bdac4b45ad30800000000000000
+      internalID: 4442039400174901172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_20
+      rect:
+        serializedVersion: 2
+        x: 760
+        y: 80
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ea56a674aee39570800000000000000
+      internalID: 8472377714146695908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_21
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 37
+        width: 31
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddbc4e544f9e4e460800000000000000
+      internalID: 7270192933836737501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_22
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 64
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c25e90401f1d262b0800000000000000
+      internalID: -5592676954155653844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_23
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 72
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5f64125622d11ab0800000000000000
+      internalID: -5039015446023213221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_24
+      rect:
+        serializedVersion: 2
+        x: 888
+        y: 64
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f424c6f9d50e7bf0800000000000000
+      internalID: -324815689418005256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_25
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 0
+        width: 83
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0fe71b6ae62733a0800000000000000
+      internalID: -6685832333547278579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_26
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 50
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f4509d3b9ac21120800000000000000
+      internalID: 2383189920934024435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_27
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 27
+        width: 17
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7a8259b8268a7bc0800000000000000
+      internalID: -3784565027385472386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_28
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 29
+        width: 21
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e6297fcaa3b438c0800000000000000
+      internalID: -4020391021128374552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_29
+      rect:
+        serializedVersion: 2
+        x: 916
+        y: 31
+        width: 41
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04d9f19cc926e8e60800000000000000
+      internalID: 7966413216393698624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_30
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 12
+        width: 28
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60fa6681360581ac0800000000000000
+      internalID: -3884266292065685754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_31
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 15
+        width: 35
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 146c2d267c94e27b0800000000000000
+      internalID: -5247175395134749119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_32
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 33
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5adc2238f53876870800000000000000
+      internalID: 8676047653397777829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_33
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 0
+        width: 49
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0317f6c1c5c4d6250800000000000000
+      internalID: 5939487442069319984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_34
+      rect:
+        serializedVersion: 2
+        x: 956
+        y: 31
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66d5c44eec2bfb150800000000000000
+      internalID: 5890623439287115110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_35
+      rect:
+        serializedVersion: 2
+        x: 966
+        y: 31
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b5ff42b1c434ef20800000000000000
+      internalID: 3450941220997559730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_36
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 17
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a936786c46f38f30800000000000000
+      internalID: 4576772454369081762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car-green_37
+      rect:
+        serializedVersion: 2
+        x: 728
+        y: 0
+        width: 55
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f33c6cd99a1e5a00800000000000000
+      internalID: 747063836320478201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      car-green_0: 6789974302026733439
+      car-green_1: 7897133771506879256
+      car-green_10: -3866887936716238573
+      car-green_11: 4670270410285353784
+      car-green_12: -764319495236538108
+      car-green_13: -793372152477069429
+      car-green_14: -284161719688442451
+      car-green_15: 3467556060700304509
+      car-green_16: -522180218355932367
+      car-green_17: -1498823661812916025
+      car-green_18: -6450776833775282850
+      car-green_19: 4442039400174901172
+      car-green_2: 4265548814934450845
+      car-green_20: 8472377714146695908
+      car-green_21: 7270192933836737501
+      car-green_22: -5592676954155653844
+      car-green_23: -5039015446023213221
+      car-green_24: -324815689418005256
+      car-green_25: -6685832333547278579
+      car-green_26: 2383189920934024435
+      car-green_27: -3784565027385472386
+      car-green_28: -4020391021128374552
+      car-green_29: 7966413216393698624
+      car-green_3: -8680151718199095822
+      car-green_30: -3884266292065685754
+      car-green_31: -5247175395134749119
+      car-green_32: 8676047653397777829
+      car-green_33: 5939487442069319984
+      car-green_34: 5890623439287115110
+      car-green_35: 3450941220997559730
+      car-green_36: 4576772454369081762
+      car-green_37: 747063836320478201
+      car-green_4: -638490951492433655
+      car-green_5: 7366084732792265449
+      car-green_6: -1079389140749791649
+      car-green_7: -6281913248543602420
+      car-green_8: 1715850409245172608
+      car-green_9: 9203674627909412821
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

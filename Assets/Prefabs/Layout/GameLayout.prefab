@@ -118,7 +118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31e6304d8e82470c9f59a3f9db0d3f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameLayoutController
-  layoutManager: {fileID: 0}
   pauseButton: {fileID: 6004}
   settingsPopupPrefab: {fileID: 1000, guid: 9f9fe6aa79594e9a9a01d50f802d9f3c, type: 3}
 --- !u!1 &2000
@@ -225,7 +224,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1.4383999, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6321}
   m_Father: {fileID: 1001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.08, y: 0.25}
@@ -539,4 +539,73 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
-
+--- !u!1001 &7000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5001}
+    m_Modifications:
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925756695097592238, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_CellSize.x
+      value: 127.59429
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925756695097592238, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+      propertyPath: m_CellSize.y
+      value: 90.630005
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+--- !u!224 &6321 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1001, guid: 2e1afa89a60849d99bbd61f9737f0946, type: 3}
+  m_PrefabInstance: {fileID: 7000}
+  m_PrefabAsset: {fileID: 0}
