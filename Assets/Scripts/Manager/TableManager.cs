@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public sealed class TableManager : MonoBehaviour
 {
     [SerializeField] private Table table;
+    [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private GameObject carPrefab;
     [SerializeField, Min(1)] private int levelNumber = 1;
     [SerializeField] private TextAsset carSpriteConfig;
@@ -34,7 +35,7 @@ public sealed class TableManager : MonoBehaviour
     {
         ClearGrid();
 
-        if (table == null || carPrefab == null || carSpriteConfig == null)
+        if (table == null || waitingAreaManager == null || carPrefab == null || carSpriteConfig == null)
         {
             Debug.LogError("TableManager: something is missing.", this);
             return;
@@ -135,6 +136,7 @@ public sealed class TableManager : MonoBehaviour
         RectTransform carRect = carObject.GetComponent<RectTransform>();
         Image image = carObject.GetComponentInChildren<Image>(true);
         CarInteraction carInteraction = carObject.GetComponent<CarInteraction>();
+        carInteraction.SetCarType(car.type);
 
         Vector2Int cell = new Vector2Int(car.x, car.y);
 
@@ -157,6 +159,11 @@ public sealed class TableManager : MonoBehaviour
 
     private void HandleCarRemoval(CarInteraction carInteraction)
     {
+        if (!waitingAreaManager.TryMoveCar(carInteraction))
+        {
+            return;
+        }
+
         Vector2Int occupiedCell = default;
         bool cellFound = false;
 

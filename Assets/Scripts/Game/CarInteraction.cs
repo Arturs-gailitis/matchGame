@@ -3,16 +3,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Handles clicking a car and removes it only while it is removable.
+/// Handles clicking a car while it is removable.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class CarInteraction : MonoBehaviour
 {
 
     [SerializeField] private CarState state = CarState.Blocked;
+    [SerializeField] private int carType = -1;
     [SerializeField] private Button button;
 
     public CarState State => state;
+    public int CarType => carType;
     public event Action<CarInteraction> RemovalRequested;
 
     private void Awake()
@@ -30,6 +32,11 @@ public sealed class CarInteraction : MonoBehaviour
         state = newState;
     }
 
+    public void SetCarType(int type)
+    {
+        carType = type;
+    }
+
     private void HandleClick()
     {
         if (state != CarState.Removable)
@@ -38,12 +45,13 @@ public sealed class CarInteraction : MonoBehaviour
         }
 
         RemovalRequested?.Invoke(this);
-        Destroy(gameObject);
     }
 
     public enum CarState
     {
         Blocked,
-        Removable
+        Removable,
+        Waiting,
+        Matched
     }
 }
