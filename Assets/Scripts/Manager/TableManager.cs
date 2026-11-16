@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,13 +11,15 @@ public sealed class TableManager : MonoBehaviour
     [SerializeField] private Table table;
     [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private GameObject carPrefab;
-    [SerializeField, Min(1)] private int levelNumber = 1;
     [SerializeField] private TextAsset carSpriteConfig;
     [SerializeField] private Sprite[] carSprites;
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
 
+    public event Action LevelCompleted;
+
     private readonly List<GameObject> spawnedCars = new List<GameObject>();
     private readonly Dictionary<Vector2Int, CarInteraction> carsByCell = new Dictionary<Vector2Int, CarInteraction>();
+    private bool levelCompletionRaised;
 
     private static readonly Vector2Int[] AdjacentDirections =
     {
@@ -26,12 +29,31 @@ public sealed class TableManager : MonoBehaviour
         Vector2Int.right
     };
 
-    private void Start()
+    public void SetLevel(int level)
     {
-        BuildGrid();
+        var levelNumber = Mathf.Max(1, level);
+
+        levelCompletionRaised = false;
+        BuildGrid(levelNumber);
     }
 
-    private void BuildGrid()
+    private void OnEnable()
+    {
+        if (waitingAreaManager != null)
+        {
+            waitingAreaManager.BecameEmpty += CheckLevelCompleted;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (waitingAreaManager != null)
+        {
+            waitingAreaManager.BecameEmpty -= CheckLevelCompleted;
+        }
+    }
+
+    private void BuildGrid(int levelNumber)
     {
         ClearGrid();
 
@@ -127,7 +149,7 @@ public sealed class TableManager : MonoBehaviour
 
     private void CreateCar(LevelCarData car, Sprite sprite)
     {
-        Object instantiatedObject = Instantiate(carPrefab as Object, table.transform, false);
+        UnityEngine.Object instantiatedObject = Instantiate(carPrefab, table.transform, false);
         GameObject carObject = instantiatedObject as GameObject;
 
         carObject.name = $"Car_{car.id}";
@@ -185,6 +207,19 @@ public sealed class TableManager : MonoBehaviour
         carInteraction.RemovalRequested -= HandleCarRemoval;
         spawnedCars.Remove(carInteraction.gameObject);
         RefreshCarStates();
+
+        CheckLevelCompleted();
+    }
+
+    private void CheckLevelCompleted()
+    {
+        if (levelCompletionRaised || spawnedCars.Count > 0 || waitingAreaManager == null || !waitingAreaManager.IsEmpty)
+        {
+            return;
+        }
+
+        levelCompletionRaised = true;
+        LevelCompleted?.Invoke();
     }
 
     private void RefreshCarStates()

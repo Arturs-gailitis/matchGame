@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -9,6 +10,10 @@ public sealed class WaitingAreaManager : MonoBehaviour
 {
     [SerializeField] private Transform waitingArea;
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
+
+    public event Action BecameEmpty;
+
+    public bool IsEmpty => waitingArea != null && waitingArea.GetComponentInChildren<CarInteraction>(true) == null;
 
     public bool TryMoveCar(CarInteraction carInteraction)
     {
@@ -124,6 +129,11 @@ public sealed class WaitingAreaManager : MonoBehaviour
         for (int index = 0; index < waitingCars.Count; index++)
         {
             MoveCarToSlot(waitingCars[index], waitingArea.GetChild(index));
+        }
+
+        if (IsEmpty)
+        {
+            BecameEmpty?.Invoke();
         }
     }
 }
