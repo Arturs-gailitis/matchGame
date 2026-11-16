@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public sealed class GameManager : MonoBehaviour
 {
     [SerializeField] private TableManager tableManager;
+    [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private Text levelText;
 
     private int currentLevel;
@@ -15,6 +16,7 @@ public sealed class GameManager : MonoBehaviour
     private void Start()
     {
         tableManager.LevelCompleted += HandleLevelCompleted;
+        waitingAreaManager.RestartLevelRequested += HandleRestartLevelRequested;
 
         currentLevel = PlayerStorage.GetCurrentLevel();
         UpdateLevelText();
@@ -26,6 +28,7 @@ public sealed class GameManager : MonoBehaviour
         if (tableManager != null)
         {
             tableManager.LevelCompleted -= HandleLevelCompleted;
+            waitingAreaManager.RestartLevelRequested -= HandleRestartLevelRequested;
         }
     }
 
@@ -34,6 +37,12 @@ public sealed class GameManager : MonoBehaviour
         currentLevel++;
         PlayerStorage.SetCurrentLevel(currentLevel);
         UpdateLevelText();
+        tableManager.SetLevel(currentLevel);
+    }
+
+    private void HandleRestartLevelRequested()
+    {
+        waitingAreaManager.ClearCars();
         tableManager.SetLevel(currentLevel);
     }
 

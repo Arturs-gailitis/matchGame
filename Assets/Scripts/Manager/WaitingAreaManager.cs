@@ -12,6 +12,9 @@ public sealed class WaitingAreaManager : MonoBehaviour
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
 
     public event Action BecameEmpty;
+    public event Action RestartLevelRequested;
+
+    private bool restartRequestPending;
 
     public bool IsEmpty => waitingArea != null && waitingArea.GetComponentInChildren<CarInteraction>(true) == null;
 
@@ -32,7 +35,14 @@ public sealed class WaitingAreaManager : MonoBehaviour
             }
 
             MoveCarToSlot(carInteraction, slot);
-            MatchWaitingCars();
+            bool hasMatch = MatchWaitingCars();
+
+            if (!hasMatch && AreAllSlotsFilled() && !restartRequestPending)
+            {
+                restartRequestPending = true;
+                RaiseRestartLevelRequestedNextFrame().Forget();
+            }
+
             return true;
         }
 
@@ -55,7 +65,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
         carRect.SetAsLastSibling();
     }
 
-    private void MatchWaitingCars()
+    private bool MatchWaitingCars()
     {
         var carsByType = new Dictionary<int, List<CarInteraction>>();
 
@@ -77,6 +87,8 @@ public sealed class WaitingAreaManager : MonoBehaviour
             cars.Add(car);
         }
 
+        bool hasMatch = false;
+
         foreach (List<CarInteraction> cars in carsByType.Values)
         {
             if (cars.Count < 3)
@@ -90,8 +102,63 @@ public sealed class WaitingAreaManager : MonoBehaviour
                 car.SetState(CarInteraction.CarState.Matched);
             }
 
+            hasMatch = true;
             RemoveMatchedCarsAfterDelay().Forget();
         }
+
+        return hasMatch;
+    }
+
+    private bool AreAllSlotsFilled()
+    {
+        if (waitingArea == null || waitingArea.childCount == 0)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < waitingArea.childCount; index++)
+        {
+            if (waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true) == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void ClearCars()
+    {
+        restartRequestPending = false;
+
+        if (waitingArea == null)
+        {
+            return;
+        }
+
+        for (int index = 0; index < waitingArea.childCount; index++)
+        {
+            CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
+
+            if (car != null)
+            {
+                Destroy(car.gameObject);
+            }
+        }
+    }
+
+    private async UniTask RaiseRestartLevelRequestedNextFrame()
+    {
+        await UniTask.Yield();
+
+        if (this == null || !AreAllSlotsFilled())
+        {
+            restartRequestPending = false;
+            return;
+        }
+
+        restartRequestPending = false;
+        RestartLevelRequested?.Invoke();
     }
 
     private async UniTask RemoveMatchedCarsAfterDelay()
