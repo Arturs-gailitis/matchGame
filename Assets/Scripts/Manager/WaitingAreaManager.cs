@@ -89,6 +89,8 @@ public sealed class WaitingAreaManager : MonoBehaviour
 
         bool hasMatch = false;
 
+        var matchedCars = new List<CarInteraction>();
+
         foreach (List<CarInteraction> cars in carsByType.Values)
         {
             if (cars.Count < 3)
@@ -100,10 +102,15 @@ public sealed class WaitingAreaManager : MonoBehaviour
             {
                 CarInteraction car = cars[index];
                 car.SetState(CarInteraction.CarState.Matched);
+                matchedCars.Add(car);
             }
 
             hasMatch = true;
-            RemoveMatchedCarsAfterDelay().Forget();
+        }
+
+        if (matchedCars.Count > 0)
+        {
+            RemoveMatchedCarsAfterAnimation(matchedCars).Forget();
         }
 
         return hasMatch;
@@ -161,9 +168,14 @@ public sealed class WaitingAreaManager : MonoBehaviour
         RestartLevelRequested?.Invoke();
     }
 
-    private async UniTask RemoveMatchedCarsAfterDelay()
+    private async UniTask RemoveMatchedCarsAfterAnimation(List<CarInteraction> matchedCars)
     {
-        await UniTask.Delay(1000);
+        if (this == null)
+        {
+            return;
+        }
+
+        await WaitingAreaMatchAnimation.PlayAsync(matchedCars);
 
         if (this == null)
         {
@@ -181,7 +193,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
                 continue;
             }
 
-            if (car.State == CarInteraction.CarState.Matched)
+            if (matchedCars.Contains(car))
             {
                 Destroy(car.gameObject);
             }
