@@ -14,8 +14,11 @@ public sealed class CarInteraction : MonoBehaviour
     [SerializeField] private Button button;
 
     public CarState State => state;
+    public ObjectState ObjectState => objectState;
     public int CarType => carType;
     public event Action<CarInteraction> RemovalRequested;
+
+    private ObjectState objectState;
 
     private void Awake()
     {
@@ -35,6 +38,11 @@ public sealed class CarInteraction : MonoBehaviour
     public void SetCarType(int type)
     {
         carType = type;
+    }
+
+    public void SetObjectState(ObjectState newState)
+    {
+        objectState = newState;
     }
 
     private void HandleClick()

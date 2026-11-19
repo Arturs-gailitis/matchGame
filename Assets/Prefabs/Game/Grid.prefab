@@ -54,6 +54,7 @@ MonoBehaviour:
   table: {fileID: 2002}
   waitingAreaManager: {fileID: 4005}
   carPrefab: {fileID: 1000, guid: 2891af36d17b4ea4b1d286c3bfb3f2e9, type: 3}
+  wallPrefab: {fileID: 1000, guid: 5e3a9c7f1b2d46e8a0f4c6d9b7e15382, type: 3}
   levelNumber: 1
   carSpriteConfig: {fileID: 4900000, guid: 65dad06a4583a0f4dad2f66fabb354e7, type: 3}
   carSprites:
@@ -62,6 +63,7 @@ MonoBehaviour:
   - {fileID: -5318815750719064614, guid: 97d86fadc48842b4a97f1febf4d4c3ff, type: 3}
   - {fileID: 8047951111329202948, guid: 298eebb6ce816684aae7a6fd07366c94, type: 3}
   carScale: 0.8
+  wallConnectionOverlap: 0.02
 --- !u!1 &2000
 GameObject:
   m_ObjectHideFlags: 0

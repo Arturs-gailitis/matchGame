@@ -11,14 +11,19 @@ public sealed class TableManager : MonoBehaviour
     [SerializeField] private Table table;
     [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private GameObject carPrefab;
+    [SerializeField] private GameObject wallPrefab;
     [SerializeField] private TextAsset carSpriteConfig;
     [SerializeField] private Sprite[] carSprites;
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
+    [SerializeField, Range(0f, 0.2f)] private float wallConnectionOverlap = 0f;
 
     public event Action LevelCompleted;
 
     private readonly List<GameObject> spawnedCars = new List<GameObject>();
+    private readonly List<GameObject> spawnedWalls = new List<GameObject>();
     private readonly Dictionary<Vector2Int, CarInteraction> carsByCell = new Dictionary<Vector2Int, CarInteraction>();
+    private readonly Dictionary<Vector2Int, WallObstacle> wallsByCell = new Dictionary<Vector2Int, WallObstacle>();
+    private readonly Dictionary<Vector2Int, RectTransform> wallRectsByCell = new Dictionary<Vector2Int, RectTransform>();
     private bool levelCompletionRaised;
 
     private static readonly Vector2Int[] AdjacentDirections =
@@ -57,7 +62,7 @@ public sealed class TableManager : MonoBehaviour
     {
         ClearGrid();
 
-        if (table == null || waitingAreaManager == null || carPrefab == null || carSpriteConfig == null)
+        if (table == null || waitingAreaManager == null || carPrefab == null || wallPrefab == null || carSpriteConfig == null)
         {
             Debug.LogError("TableManager: something is missing.", this);
             return;
@@ -105,7 +110,45 @@ public sealed class TableManager : MonoBehaviour
             CreateCar(car, sprite);
         }
 
+        CreateWallsForEmptyCells();
         RefreshCarStates();
+    }
+
+    private void CreateWallsForEmptyCells()
+    {
+        for (int row = 0; row < table.Rows; row++)
+        {
+            for (int column = 0; column < table.Columns; column++)
+            {
+                Vector2Int cell = new Vector2Int(column, row);
+
+                if (carsByCell.ContainsKey(cell))
+                {
+                    continue;
+                }
+
+                GameObject wallObject = Instantiate(wallPrefab, table.transform, false);
+                wallObject.name = $"Wall_{column}_{row}";
+                wallObject.transform.SetAsFirstSibling();
+                spawnedWalls.Add(wallObject);
+
+                WallObstacle wallObstacle = wallObject.GetComponent<WallObstacle>();
+
+                wallObstacle.SetObjectState(ObjectState.Wall);
+                wallsByCell.Add(cell, wallObstacle);
+
+                RectTransform wallRect = wallObject.GetComponent<RectTransform>();
+
+                wallRect.anchorMin = new Vector2(0.5f, 0.5f);
+                wallRect.anchorMax = new Vector2(0.5f, 0.5f);
+                wallRect.pivot = new Vector2(0.5f, 0.5f);
+                wallRect.sizeDelta = table.CellSize;
+                wallRect.anchoredPosition = table.GetCellCenter(column, row);
+                wallRectsByCell.Add(cell, wallRect);
+            }
+        }
+
+        WallTextureContinuity.ApplyWallConnections(table, wallsByCell, wallRectsByCell, wallConnectionOverlap);
     }
 
     private Dictionary<int, CarSpriteConfig> CreateConfigLookup()
@@ -163,6 +206,7 @@ public sealed class TableManager : MonoBehaviour
         Vector2Int cell = new Vector2Int(car.x, car.y);
 
         carsByCell.Add(cell, carInteraction);
+        carInteraction.SetObjectState(ObjectState.Car);
         carInteraction.RemovalRequested += HandleCarRemoval;
 
         carRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -213,13 +257,33 @@ public sealed class TableManager : MonoBehaviour
 
     private void CheckLevelCompleted()
     {
-        if (levelCompletionRaised || spawnedCars.Count > 0 || waitingAreaManager == null || !waitingAreaManager.IsEmpty)
+        if (levelCompletionRaised || HasRemainingCarObjects() || waitingAreaManager == null || !waitingAreaManager.IsEmpty)
         {
             return;
         }
 
         levelCompletionRaised = true;
         LevelCompleted?.Invoke();
+    }
+
+    private bool HasRemainingCarObjects()
+    {
+        foreach (GameObject spawnedObject in spawnedCars)
+        {
+            if (spawnedObject == null)
+            {
+                continue;
+            }
+
+            CarInteraction carInteraction = spawnedObject.GetComponent<CarInteraction>();
+
+            if (carInteraction != null && carInteraction.ObjectState == ObjectState.Car)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void RefreshCarStates()
@@ -238,10 +302,22 @@ public sealed class TableManager : MonoBehaviour
         {
             Vector2Int adjacentCell = cell + direction;
 
-            if (table.IsValidCell(adjacentCell.x, adjacentCell.y) && !carsByCell.ContainsKey(adjacentCell))
+            if (!table.IsValidCell(adjacentCell.x, adjacentCell.y))
             {
-                return true;
+                continue;
             }
+
+            if (carsByCell.TryGetValue(adjacentCell, out CarInteraction adjacentCar) && adjacentCar.ObjectState == ObjectState.Car)
+            {
+                continue;
+            }
+
+            if (wallsByCell.TryGetValue(adjacentCell, out WallObstacle adjacentWall) && adjacentWall.ObjectState == ObjectState.Wall)
+            {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
@@ -249,22 +325,40 @@ public sealed class TableManager : MonoBehaviour
 
     private void ClearGrid()
     {
-        foreach (GameObject car in spawnedCars)
+        for (int index = spawnedCars.Count - 1; index >= 0; index--)
         {
-            if (car != null)
+            GameObject spawnedObject = spawnedCars[index];
+
+            if (spawnedObject != null)
             {
-                CarInteraction carInteraction = car.GetComponent<CarInteraction>();
+                CarInteraction carInteraction = spawnedObject.GetComponent<CarInteraction>();
 
                 if (carInteraction != null)
                 {
                     carInteraction.RemovalRequested -= HandleCarRemoval;
                 }
 
-                Destroy(car);
+                Destroy(spawnedObject);
             }
         }
 
         spawnedCars.Clear();
+
+        for (int index = spawnedWalls.Count - 1; index >= 0; index--)
+        {
+            GameObject spawnedWall = spawnedWalls[index];
+
+            if (spawnedWall != null)
+            {
+                Destroy(spawnedWall);
+            }
+        }
+
+        spawnedWalls.Clear();
         carsByCell.Clear();
+        wallsByCell.Clear();
+        wallRectsByCell.Clear();
+        levelCompletionRaised = false;
     }
+
 }
