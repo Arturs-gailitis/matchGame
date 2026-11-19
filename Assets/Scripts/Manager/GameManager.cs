@@ -16,7 +16,6 @@ public sealed class GameManager : MonoBehaviour
     private void Start()
     {
         tableManager.LevelCompleted += HandleLevelCompleted;
-        waitingAreaManager.RestartLevelRequested += HandleRestartLevelRequested;
 
         currentLevel = PlayerStorage.GetCurrentLevel();
         UpdateLevelText();
@@ -28,7 +27,6 @@ public sealed class GameManager : MonoBehaviour
         if (tableManager != null)
         {
             tableManager.LevelCompleted -= HandleLevelCompleted;
-            waitingAreaManager.RestartLevelRequested -= HandleRestartLevelRequested;
         }
     }
 
@@ -40,7 +38,7 @@ public sealed class GameManager : MonoBehaviour
         tableManager.SetLevel(currentLevel);
     }
 
-    private void HandleRestartLevelRequested()
+    public void RestartLevel()
     {
         waitingAreaManager.ClearCars();
         tableManager.SetLevel(currentLevel);

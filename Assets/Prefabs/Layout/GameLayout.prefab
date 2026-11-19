@@ -122,6 +122,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameLayoutController
   pauseButton: {fileID: 6004}
   settingsPopupPrefab: {fileID: 1000, guid: 9f9fe6aa79594e9a9a01d50f802d9f3c, type: 3}
+  levelLostPopupPrefab: {fileID: 1000, guid: d3f1a7c9e5b24d6088a2c4f6b0e9d137, type: 3}
+  waitingAreaManager: {fileID: 5373}
+  gameManager: {fileID: 1100}
 --- !u!114 &1100
 MonoBehaviour:
   m_ObjectHideFlags: 0

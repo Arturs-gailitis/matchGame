@@ -12,7 +12,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
 
     public event Action BecameEmpty;
-    public event Action RestartLevelRequested;
+    public event Action LevelLost;
 
     private bool restartRequestPending;
 
@@ -40,7 +40,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
             if (!hasMatch && AreAllSlotsFilled() && !restartRequestPending)
             {
                 restartRequestPending = true;
-                RaiseRestartLevelRequestedNextFrame().Forget();
+                RaiseLevelLostNextFrame().Forget();
             }
 
             return true;
@@ -154,7 +154,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
         }
     }
 
-    private async UniTask RaiseRestartLevelRequestedNextFrame()
+    private async UniTask RaiseLevelLostNextFrame()
     {
         await UniTask.Yield();
 
@@ -165,7 +165,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
         }
 
         restartRequestPending = false;
-        RestartLevelRequested?.Invoke();
+        LevelLost?.Invoke();
     }
 
     private async UniTask RemoveMatchedCarsAfterAnimation(List<CarInteraction> matchedCars)
