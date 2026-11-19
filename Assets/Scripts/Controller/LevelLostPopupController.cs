@@ -62,6 +62,6 @@ public sealed class LevelLostPopupController : MonoBehaviour
             return;
         }
 
-        layoutManager.ShowLayout(LayoutManager.LayoutType.Lobby);
+        layoutManager.ShowLayout(LayoutType.Lobby);
     }
 }

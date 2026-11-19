@@ -53,6 +53,6 @@ public sealed class SettingsPopupController : MonoBehaviour
             return;
         }
 
-        layoutManager.ShowLayout(LayoutManager.LayoutType.Lobby);
+        layoutManager.ShowLayout(LayoutType.Lobby);
     }
 }

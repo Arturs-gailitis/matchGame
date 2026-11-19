@@ -290,7 +290,7 @@ public sealed class TableManager : MonoBehaviour
     {
         foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
         {
-            CarInteraction.CarState state = entry.Key.y == 0 || HasFreeAdjacentCell(entry.Key) ? CarInteraction.CarState.Removable : CarInteraction.CarState.Blocked;
+            CarState state = entry.Key.y == 0 || HasFreeAdjacentCell(entry.Key) ? CarState.Removable : CarState.Blocked;
 
             entry.Value.SetState(state);
         }

@@ -61,7 +61,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
         carRect.anchoredPosition = Vector2.zero;
         carRect.sizeDelta = slotRect.rect.size;
         carRect.localScale = Vector3.one * carScale;
-        carInteraction.SetState(CarInteraction.CarState.Waiting);
+        carInteraction.SetState(CarState.Waiting);
         carRect.SetAsLastSibling();
     }
 
@@ -73,7 +73,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
         {
             CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
 
-            if (car == null || car.State != CarInteraction.CarState.Waiting)
+            if (car == null || car.State != CarState.Waiting)
             {
                 continue;
             }
@@ -101,7 +101,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
             for (int index = 0; index < 3; index++)
             {
                 CarInteraction car = cars[index];
-                car.SetState(CarInteraction.CarState.Matched);
+                car.SetState(CarState.Matched);
                 matchedCars.Add(car);
             }
 
@@ -197,7 +197,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
             {
                 Destroy(car.gameObject);
             }
-            else if (car.State == CarInteraction.CarState.Waiting)
+            else if (car.State == CarState.Waiting)
             {
                 waitingCars.Add(car);
             }

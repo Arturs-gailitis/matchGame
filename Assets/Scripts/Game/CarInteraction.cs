@@ -54,12 +54,4 @@ public sealed class CarInteraction : MonoBehaviour
 
         RemovalRequested?.Invoke(this);
     }
-
-    public enum CarState
-    {
-        Blocked,
-        Removable,
-        Waiting,
-        Matched
-    }
 }

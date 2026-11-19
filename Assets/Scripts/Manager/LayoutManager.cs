@@ -62,12 +62,5 @@ public sealed class LayoutManager : MonoBehaviour
         {
             gameController.Initialize(this);
         }
-
-    }
-
-    public enum LayoutType
-    {
-        Lobby,
-        Game
     }
 }

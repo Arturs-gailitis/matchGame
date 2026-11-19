@@ -63,6 +63,6 @@ public sealed class LevelWonPopupController : MonoBehaviour
         }
 
         gameManager.TryCommitNextLevel();
-        layoutManager.ShowLayout(LayoutManager.LayoutType.Lobby);
+        layoutManager.ShowLayout(LayoutType.Lobby);
     }
 }

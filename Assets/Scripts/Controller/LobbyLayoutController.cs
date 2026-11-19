@@ -40,6 +40,6 @@ public sealed class LobbyLayoutController : MonoBehaviour
             return;
         }
 
-        layoutManager.ShowLayout(LayoutManager.LayoutType.Game);
+        layoutManager.ShowLayout(LayoutType.Game);
     }
 }
