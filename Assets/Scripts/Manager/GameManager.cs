@@ -12,6 +12,7 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField] private Text levelText;
 
     private int currentLevel;
+    private int pendingNextLevel;
 
     private void Start()
     {
@@ -32,10 +33,32 @@ public sealed class GameManager : MonoBehaviour
 
     private void HandleLevelCompleted()
     {
-        currentLevel++;
-        PlayerStorage.SetCurrentLevel(currentLevel);
+        pendingNextLevel = currentLevel + 1;
+    }
+
+    public void ContinueToNextLevel()
+    {
+        if (!TryCommitNextLevel())
+        {
+            return;
+        }
+
         UpdateLevelText();
         tableManager.SetLevel(currentLevel);
+    }
+
+    public bool TryCommitNextLevel()
+    {
+        if (pendingNextLevel <= currentLevel)
+        {
+            Debug.LogWarning("GameManager: no completed level is waiting to be continued.", this);
+            return false;
+        }
+
+        currentLevel = pendingNextLevel;
+        pendingNextLevel = 0;
+        PlayerStorage.SetCurrentLevel(currentLevel);
+        return true;
     }
 
     public void RestartLevel()

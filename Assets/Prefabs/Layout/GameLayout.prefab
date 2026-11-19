@@ -123,7 +123,9 @@ MonoBehaviour:
   pauseButton: {fileID: 6004}
   settingsPopupPrefab: {fileID: 1000, guid: 9f9fe6aa79594e9a9a01d50f802d9f3c, type: 3}
   levelLostPopupPrefab: {fileID: 1000, guid: d3f1a7c9e5b24d6088a2c4f6b0e9d137, type: 3}
+  levelWonPopupPrefab: {fileID: 1000, guid: 4b8d2e6f1a3c5079b2d4e6f8a1c3e5b7, type: 3}
   waitingAreaManager: {fileID: 5373}
+  tableManager: {fileID: 4320}
   gameManager: {fileID: 1100}
 --- !u!114 &1100
 MonoBehaviour:

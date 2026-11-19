@@ -1,17 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Creates and owns the Settings, Level Lost popup instances for GameLayout.</summary>
+/// <summary>Creates and owns the GameLayout popup instances.</summary>
 public sealed class GameLayoutController : MonoBehaviour
 {
     [SerializeField] private Button pauseButton;
     [SerializeField] private GameObject settingsPopupPrefab;
     [SerializeField] private GameObject levelLostPopupPrefab;
+    [SerializeField] private GameObject levelWonPopupPrefab;
     [SerializeField] private WaitingAreaManager waitingAreaManager;
+    [SerializeField] private TableManager tableManager;
     [SerializeField] private GameManager gameManager;
 
     private GameObject settingsPopupInstance;
     private GameObject levelLostPopupInstance;
+    private GameObject levelWonPopupInstance;
     private LayoutManager layoutManager;
 
     public void Initialize(LayoutManager manager)
@@ -30,6 +33,11 @@ public sealed class GameLayoutController : MonoBehaviour
         {
             waitingAreaManager.LevelLost += ShowLevelLostPopup;
         }
+
+        if (tableManager != null)
+        {
+            tableManager.LevelCompleted += ShowLevelWonPopup;
+        }
     }
 
     private void OnDestroy()
@@ -43,11 +51,16 @@ public sealed class GameLayoutController : MonoBehaviour
         {
             waitingAreaManager.LevelLost -= ShowLevelLostPopup;
         }
+
+        if (tableManager != null)
+        {
+            tableManager.LevelCompleted -= ShowLevelWonPopup;
+        }
     }
 
     private void ShowSettings()
     {
-        if (levelLostPopupInstance != null && levelLostPopupInstance.activeSelf)
+        if ((levelLostPopupInstance != null && levelLostPopupInstance.activeSelf) || (levelWonPopupInstance != null && levelWonPopupInstance.activeSelf))
         {
             return;
         }
@@ -85,6 +98,25 @@ public sealed class GameLayoutController : MonoBehaviour
         if (levelLostPopupInstance != null)
         {
             levelLostPopupInstance.SetActive(true);
+        }
+    }
+
+    private void ShowLevelWonPopup() 
+    {
+        if (levelWonPopupInstance == null && levelWonPopupPrefab != null)
+        {
+            levelWonPopupInstance = Instantiate(levelWonPopupPrefab, transform, false);
+            LevelWonPopupController popupController = levelWonPopupInstance.GetComponent<LevelWonPopupController>();
+
+            if (popupController != null)
+            {
+                popupController.Initialize(layoutManager, gameManager);
+            }
+        }
+
+        if (levelWonPopupInstance != null)
+        {
+            levelWonPopupInstance.SetActive(true);
         }
     }
 }
