@@ -249,6 +249,7 @@ GameObject:
   - component: {fileID: 3002}
   - component: {fileID: 3003}
   - component: {fileID: 3004}
+  - component: {fileID: 9000001}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -256,6 +257,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b22bb8ea51f42839dd4f103b0c54967, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  targetButton: {fileID: 3004}
+  tapSound: {fileID: 8300000, guid: 84fb297b3f06bdd40a0de903ec5e143e, type: 3}
+  volume: 1
 --- !u!224 &3001
 RectTransform:
   m_ObjectHideFlags: 0
@@ -449,6 +465,7 @@ GameObject:
   - component: {fileID: 5002}
   - component: {fileID: 5003}
   - component: {fileID: 5004}
+  - component: {fileID: 9000002}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -456,6 +473,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b22bb8ea51f42839dd4f103b0c54967, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  targetButton: {fileID: 5004}
+  tapSound: {fileID: 8300000, guid: 84fb297b3f06bdd40a0de903ec5e143e, type: 3}
+  volume: 1
 --- !u!224 &5001
 RectTransform:
   m_ObjectHideFlags: 0
