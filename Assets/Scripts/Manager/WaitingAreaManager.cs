@@ -17,8 +17,28 @@ public sealed class WaitingAreaManager : MonoBehaviour
     private bool restartRequestPending;
 
     public bool IsEmpty => waitingArea != null && waitingArea.GetComponentInChildren<CarInteraction>(true) == null;
+    public bool HasFreeSlot
+    {
+        get
+        {
+            if (waitingArea == null)
+            {
+                return false;
+            }
 
-    public bool TryMoveCar(CarInteraction carInteraction)
+            for (int index = 0; index < waitingArea.childCount; index++)
+            {
+                if (waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true) == null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public async UniTask<bool> TryMoveCar(CarInteraction carInteraction)
     {
         if (carInteraction == null)
         {
@@ -32,6 +52,15 @@ public sealed class WaitingAreaManager : MonoBehaviour
             if (slot.GetComponentInChildren<CarInteraction>(true) != null)
             {
                 continue;
+            }
+
+            RectTransform carRect = carInteraction.GetComponent<RectTransform>();
+            RectTransform slotRect = slot as RectTransform;
+            await WaitingSlotMoveAnimation.PlayAsync(carRect, slotRect);
+
+            if (this == null || carInteraction == null || slot == null)
+            {
+                return false;
             }
 
             MoveCarToSlot(carInteraction, slot);

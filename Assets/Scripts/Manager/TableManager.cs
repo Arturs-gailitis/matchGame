@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,14 +26,7 @@ public sealed class TableManager : MonoBehaviour
     private readonly Dictionary<Vector2Int, WallObstacle> wallsByCell = new Dictionary<Vector2Int, WallObstacle>();
     private readonly Dictionary<Vector2Int, RectTransform> wallRectsByCell = new Dictionary<Vector2Int, RectTransform>();
     private bool levelCompletionRaised;
-
-    private static readonly Vector2Int[] AdjacentDirections =
-    {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
+    private bool isCarRemovalInProgress;
 
     public void SetLevel(int level)
     {
@@ -225,31 +219,50 @@ public sealed class TableManager : MonoBehaviour
 
     private void HandleCarRemoval(CarInteraction carInteraction)
     {
-        if (!waitingAreaManager.TryMoveCar(carInteraction))
+        if (isCarRemovalInProgress || carInteraction == null || waitingAreaManager == null || !waitingAreaManager.HasFreeSlot)
         {
             return;
         }
 
-        Vector2Int occupiedCell = default;
-        bool cellFound = false;
-
-        foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
+        if (!TryGetCarCell(carInteraction, out Vector2Int occupiedCell) || !TryGetRemovalPath(occupiedCell, carInteraction, out List<Vector2Int> path))
         {
-            if (entry.Value == carInteraction)
-            {
-                occupiedCell = entry.Key;
-                cellFound = true;
-                break;
-            }
+            RefreshCarStates();
+            return;
         }
 
-        if (cellFound)
+        isCarRemovalInProgress = true;
+        carInteraction.SetState(CarState.Blocked);
+        RemoveCarAfterAnimation(carInteraction, occupiedCell, path).Forget();
+    }
+
+    private async UniTask RemoveCarAfterAnimation(CarInteraction carInteraction, Vector2Int occupiedCell, IReadOnlyList<Vector2Int> path)
+    {
+        RectTransform carRect = carInteraction.GetComponent<RectTransform>();
+        await CarRemovalAnimation.PlayAsync(carRect, table, path);
+
+        if (this == null || carInteraction == null)
         {
-            carsByCell.Remove(occupiedCell);
+            return;
         }
 
+        bool movedToWaitingArea = await waitingAreaManager.TryMoveCar(carInteraction);
+
+        if (this == null || carInteraction == null)
+        {
+            return;
+        }
+
+        if (!movedToWaitingArea)
+        {
+            isCarRemovalInProgress = false;
+            RefreshCarStates();
+            return;
+        }
+
+        carsByCell.Remove(occupiedCell);
         carInteraction.RemovalRequested -= HandleCarRemoval;
         spawnedCars.Remove(carInteraction.gameObject);
+        isCarRemovalInProgress = false;
         RefreshCarStates();
 
         CheckLevelCompleted();
@@ -290,36 +303,41 @@ public sealed class TableManager : MonoBehaviour
     {
         foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
         {
-            CarState state = entry.Key.y == 0 || HasFreeAdjacentCell(entry.Key) ? CarState.Removable : CarState.Blocked;
+            CarState state = TryGetRemovalPath(entry.Key, entry.Value, out _) ? CarState.Removable : CarState.Blocked;
 
             entry.Value.SetState(state);
         }
     }
 
-    private bool HasFreeAdjacentCell(Vector2Int cell)
+    private bool TryGetRemovalPath( Vector2Int startCell, CarInteraction movingCar, out List<Vector2Int> path)
     {
-        foreach (Vector2Int direction in AdjacentDirections)
+        return CarRemovalAnimation.TryFindPath(startCell, table, cell => IsCellBlocked(cell, movingCar), out path);
+    }
+
+    private bool IsCellBlocked(Vector2Int cell, CarInteraction movingCar)
+    {
+        if (wallsByCell.TryGetValue(cell, out WallObstacle wall) && wall.ObjectState == ObjectState.Wall)
         {
-            Vector2Int adjacentCell = cell + direction;
-
-            if (!table.IsValidCell(adjacentCell.x, adjacentCell.y))
-            {
-                continue;
-            }
-
-            if (carsByCell.TryGetValue(adjacentCell, out CarInteraction adjacentCar) && adjacentCar.ObjectState == ObjectState.Car)
-            {
-                continue;
-            }
-
-            if (wallsByCell.TryGetValue(adjacentCell, out WallObstacle adjacentWall) && adjacentWall.ObjectState == ObjectState.Wall)
-            {
-                continue;
-            }
-
             return true;
         }
 
+        return carsByCell.TryGetValue(cell, out CarInteraction car) && car != movingCar && car.ObjectState == ObjectState.Car;
+    }
+
+    private bool TryGetCarCell(CarInteraction carInteraction, out Vector2Int cell)
+    {
+        foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
+        {
+            if (entry.Value != carInteraction)
+            {
+                continue;
+            }
+
+            cell = entry.Key;
+            return true;
+        }
+
+        cell = default;
         return false;
     }
 
@@ -359,6 +377,7 @@ public sealed class TableManager : MonoBehaviour
         wallsByCell.Clear();
         wallRectsByCell.Clear();
         levelCompletionRaised = false;
+        isCarRemovalInProgress = false;
     }
 
 }
