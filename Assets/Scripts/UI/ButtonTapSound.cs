@@ -27,6 +27,11 @@ public sealed class ButtonTapSound : MonoBehaviour
 
     private void PlayTapSound()
     {
+        if (!AudioSettingsStorage.IsSoundEnabled)
+        {
+            return;
+        }
+
         if (tapSound == null)
         {
             Debug.LogWarning("ButtonTapSound: Tap Sound is not assigned.", this);
