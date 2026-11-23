@@ -1,5 +1,7 @@
 public enum LayoutType
 {
     Lobby,
-    Game
+    Game,
+    Shop,
+    Locked
 }

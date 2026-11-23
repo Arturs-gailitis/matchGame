@@ -46,5 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LayoutManager
   lobbyLayoutPrefab: {fileID: 1000, guid: f15a9cbf142b463c864d733a49cf7efd, type: 3}
   gameLayoutPrefab: {fileID: 1000, guid: 7a0b50f3b5e4433eafad6e54f1bdc442, type: 3}
+  shopLayoutPrefab: {fileID: 1000, guid: e3f7a1c95d8246b0a4e8f2137c6d905b, type: 3}
   initialLayout: 0
   contentRoot: {fileID: 0}

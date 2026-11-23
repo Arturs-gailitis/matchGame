@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Displays either the lobby layout or the game layout.
+/// Displays the requested application layout.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class LayoutManager : MonoBehaviour
@@ -10,11 +10,13 @@ public sealed class LayoutManager : MonoBehaviour
     [Header("Layout Prefabs")]
     [SerializeField] private GameObject lobbyLayoutPrefab;
     [SerializeField] private GameObject gameLayoutPrefab;
+    [SerializeField] private GameObject shopLayoutPrefab;
 
     [Header("Settings")]
     [SerializeField] private LayoutType initialLayout = LayoutType.Lobby;
 
     private GameObject currentInstance;
+    private FooterManager currentFooterManager;
 
     public LayoutType CurrentLayout { get; private set; }
 
@@ -31,7 +33,7 @@ public sealed class LayoutManager : MonoBehaviour
             return;
         }
 
-        GameObject prefab = layout == LayoutType.Lobby ? lobbyLayoutPrefab : gameLayoutPrefab;
+        GameObject prefab = GetLayoutPrefab(layout);
 
         if (prefab == null)
         {
@@ -46,6 +48,7 @@ public sealed class LayoutManager : MonoBehaviour
 
         if (currentInstance != null)
         {
+            DisconnectFooter();
             Destroy(currentInstance);
         }
 
@@ -54,6 +57,13 @@ public sealed class LayoutManager : MonoBehaviour
         currentInstance = Instantiate(prefab, parent, false);
         currentInstance.name = prefab.name;
         CurrentLayout = layout;
+
+        currentFooterManager = currentInstance.GetComponentInChildren<FooterManager>(true);
+
+        if (currentFooterManager != null)
+        {
+            currentFooterManager.SectionSelected += HandleFooterSectionSelected;
+        }
 
         LobbyLayoutController lobbyController = currentInstance.GetComponentInChildren<LobbyLayoutController>(true);
 
@@ -68,5 +78,42 @@ public sealed class LayoutManager : MonoBehaviour
         {
             gameController.Initialize(this);
         }
+    }
+
+    private GameObject GetLayoutPrefab(LayoutType layout)
+    {
+        switch (layout)
+        {
+            case LayoutType.Lobby:
+                return lobbyLayoutPrefab;
+            case LayoutType.Game:
+                return gameLayoutPrefab;
+            case LayoutType.Shop:
+                return shopLayoutPrefab;
+            default:
+                return null;
+        }
+    }
+
+    private void HandleFooterSectionSelected(LayoutType layout)
+    {
+        if (layout == LayoutType.Shop || layout == LayoutType.Lobby)
+        {
+            ShowLayout(layout);
+        }
+    }
+
+    private void DisconnectFooter()
+    {
+        if (currentFooterManager != null)
+        {
+            currentFooterManager.SectionSelected -= HandleFooterSectionSelected;
+            currentFooterManager = null;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        DisconnectFooter();
     }
 }
