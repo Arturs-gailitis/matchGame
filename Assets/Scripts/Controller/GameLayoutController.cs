@@ -84,6 +84,13 @@ public sealed class GameLayoutController : MonoBehaviour
 
     private void ShowLevelLostPopup()
     {
+        if (levelLostPopupInstance != null && levelLostPopupInstance.activeSelf)
+        {
+            return;
+        }
+
+        PlayerEnergyStorage.TryDecreaseEnergy();
+
         if (levelLostPopupInstance == null && levelLostPopupPrefab != null)
         {
             levelLostPopupInstance = Instantiate(levelLostPopupPrefab, transform, false);

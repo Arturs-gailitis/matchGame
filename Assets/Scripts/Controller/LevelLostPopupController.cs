@@ -9,6 +9,7 @@ public sealed class LevelLostPopupController : MonoBehaviour
 
     private LayoutManager layoutManager;
     private GameManager gameManager;
+    private float nextEnergyCheckTime;
 
     public void Initialize(LayoutManager manager, GameManager game)
     {
@@ -27,6 +28,22 @@ public sealed class LevelLostPopupController : MonoBehaviour
         {
             lobbyButton.onClick.AddListener(GoToLobby);
         }
+    }
+
+    private void OnEnable()
+    {
+        RefreshRestartButton();
+    }
+
+    private void Update()
+    {
+        if (Time.unscaledTime < nextEnergyCheckTime)
+        {
+            return;
+        }
+
+        nextEnergyCheckTime = Time.unscaledTime + 0.25f;
+        RefreshRestartButton();
     }
 
     private void OnDestroy()
@@ -50,6 +67,11 @@ public sealed class LevelLostPopupController : MonoBehaviour
             return;
         }
 
+        if (!PlayerEnergyStorage.HasEnergy())
+        {
+            return;
+        }
+
         gameManager.RestartLevel();
         gameObject.SetActive(false);
     }
@@ -63,5 +85,13 @@ public sealed class LevelLostPopupController : MonoBehaviour
         }
 
         layoutManager.ShowLayout(LayoutType.Lobby);
+    }
+
+    private void RefreshRestartButton()
+    {
+        if (restartButton != null)
+        {
+            restartButton.interactable = PlayerEnergyStorage.HasEnergy();
+        }
     }
 }

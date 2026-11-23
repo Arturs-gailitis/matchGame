@@ -3,5 +3,6 @@
 /// </summary>
 public enum HeaderSectionType
 {
-    Coin = 0
+    Coin = 0,
+    Energy = 1
 }

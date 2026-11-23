@@ -7,10 +7,12 @@ using UnityEngine;
 public sealed class HeaderManager : MonoBehaviour
 {
     [SerializeField] private HeaderSectionView sectionPrefab;
-    [SerializeField] private HeaderSectionType[] sectionTypes = { HeaderSectionType.Coin };
+    [SerializeField] private HeaderSectionType[] sectionTypes = { HeaderSectionType.Coin, HeaderSectionType.Energy };
     [SerializeField] private Sprite coinIcon;
+    [SerializeField] private Sprite energyIcon;
 
     private readonly List<HeaderSectionView> spawnedSections = new List<HeaderSectionView>();
+    private float nextRefreshTime;
 
     private void OnEnable()
     {
@@ -20,6 +22,17 @@ public sealed class HeaderManager : MonoBehaviour
             return;
         }
 
+        RefreshSections();
+    }
+
+    private void Update()
+    {
+        if (Time.unscaledTime < nextRefreshTime)
+        {
+            return;
+        }
+
+        nextRefreshTime = Time.unscaledTime + 0.25f;
         RefreshSections();
     }
 
@@ -56,6 +69,11 @@ public sealed class HeaderManager : MonoBehaviour
         {
             case HeaderSectionType.Coin:
                 section.SetContent(coinIcon, PlayerStorage.GetCoins());
+                break;
+            case HeaderSectionType.Energy:
+                int energy = PlayerEnergyStorage.GetEnergy();
+                int seconds = PlayerEnergyStorage.GetSecondsUntilNextEnergy();
+                section.SetEnergyContent(energyIcon, energy, $"{seconds / 60:00}:{seconds % 60:00}");
                 break;
             default:
                 Debug.LogWarning($"HeaderManager: unsupported section type {sectionType}.", this);

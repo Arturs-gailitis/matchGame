@@ -7,6 +7,7 @@ public sealed class LobbyLayoutController : MonoBehaviour
     [SerializeField] private Button startButton;
 
     private LayoutManager layoutManager;
+    private float nextEnergyCheckTime;
 
     public void Initialize(LayoutManager manager)
     {
@@ -22,6 +23,18 @@ public sealed class LobbyLayoutController : MonoBehaviour
         }
 
         startButton.onClick.AddListener(StartGame);
+        RefreshStartButton();
+    }
+
+    private void Update()
+    {
+        if (Time.unscaledTime < nextEnergyCheckTime)
+        {
+            return;
+        }
+
+        nextEnergyCheckTime = Time.unscaledTime + 0.25f;
+        RefreshStartButton();
     }
 
     private void OnDestroy()
@@ -40,6 +53,20 @@ public sealed class LobbyLayoutController : MonoBehaviour
             return;
         }
 
+        if (!PlayerEnergyStorage.HasEnergy())
+        {
+            RefreshStartButton();
+            return;
+        }
+
         layoutManager.ShowLayout(LayoutType.Game);
+    }
+
+    private void RefreshStartButton()
+    {
+        if (startButton != null)
+        {
+            startButton.interactable = PlayerEnergyStorage.HasEnergy();
+        }
     }
 }

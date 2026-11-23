@@ -25,6 +25,12 @@ public sealed class LayoutManager : MonoBehaviour
 
     public void ShowLayout(LayoutType layout)
     {
+        if (layout == LayoutType.Game && !PlayerEnergyStorage.HasEnergy())
+        {
+            Debug.Log("LayoutManager: the player cannot enter a level without energy.", this);
+            return;
+        }
+
         GameObject prefab = layout == LayoutType.Lobby ? lobbyLayoutPrefab : gameLayoutPrefab;
 
         if (prefab == null)

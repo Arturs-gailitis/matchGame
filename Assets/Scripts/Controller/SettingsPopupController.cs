@@ -8,6 +8,7 @@ public sealed class SettingsPopupController : MonoBehaviour
     [SerializeField] private Button exitButton;
 
     private LayoutManager layoutManager;
+    private bool exitRequested;
 
     public void Initialize(LayoutManager manager)
     {
@@ -47,12 +48,19 @@ public sealed class SettingsPopupController : MonoBehaviour
 
     private void ExitToLobby()
     {
+        if (exitRequested)
+        {
+            return;
+        }
+
         if (layoutManager == null)
         {
             Debug.LogError("SettingsPopup must be initialized by a LayoutManager.", this);
             return;
         }
 
+        exitRequested = true;
+        PlayerEnergyStorage.TryDecreaseEnergy();
         layoutManager.ShowLayout(LayoutType.Lobby);
     }
 }
