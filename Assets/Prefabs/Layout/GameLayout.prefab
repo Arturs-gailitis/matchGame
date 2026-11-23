@@ -142,6 +142,7 @@ MonoBehaviour:
   tableManager: {fileID: 4320}
   waitingAreaManager: {fileID: 5373}
   levelText: {fileID: 10003}
+  levelRewardConfig: {fileID: 4900000, guid: 2f1e9c9a1a634b8aa5c7e4d9f0b6c312, type: 3}
 --- !u!1 &2000
 GameObject:
   m_ObjectHideFlags: 0

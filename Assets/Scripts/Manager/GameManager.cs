@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Loads the player's saved level and passes it to the TableManager.
+/// Loads the player's saved level, passes it to the TableManager, and awards
+/// the configured coin reward when a level is completed.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class GameManager : MonoBehaviour
@@ -10,6 +11,7 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField] private TableManager tableManager;
     [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private Text levelText;
+    [SerializeField] private TextAsset levelRewardConfig;
 
     private int currentLevel;
     private int pendingNextLevel;
@@ -33,7 +35,21 @@ public sealed class GameManager : MonoBehaviour
 
     private void HandleLevelCompleted()
     {
+        AddLevelReward();
         pendingNextLevel = currentLevel + 1;
+    }
+
+    private void AddLevelReward()
+    {
+
+        if (!LevelRewardReader.TryGetReward(levelRewardConfig.text, currentLevel, out LevelRewardConfig reward))
+        {
+            Debug.LogWarning($"GameManager: no reward is configured for level {currentLevel}.", this);
+            return;
+        }
+
+        int newBalance = PlayerStorage.AddCoins(reward.coins);
+        Debug.Log($"GameManager: level {currentLevel} completed. Added {reward.coins} coins. New balance: {newBalance}.", this);
     }
 
     public void ContinueToNextLevel()
