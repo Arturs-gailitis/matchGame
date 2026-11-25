@@ -109,6 +109,28 @@ public sealed class WaitingAreaManager : MonoBehaviour
         }
     }
 
+    public void CompactAfterReset()
+    {
+        restartRequestPending = false;
+
+        if (waitingArea == null)
+        {
+            return;
+        }
+
+        List<CarInteraction> remainingCars = GetWaitingCars();
+
+        for (int index = 0; index < remainingCars.Count; index++)
+        {
+            MoveCarToSlot(remainingCars[index], waitingArea.GetChild(index));
+        }
+
+        if (IsEmpty)
+        {
+            BecameEmpty?.Invoke();
+        }
+    }
+
     public async UniTask<bool> TryMoveCar(CarInteraction carInteraction)
     {
         if (carInteraction == null)

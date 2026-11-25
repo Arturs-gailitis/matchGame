@@ -952,23 +952,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1001, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 1003, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
       propertyPath: powerUpPrefab
-      value:
+      value: 
       objectReference: {fileID: 1005, guid: 3a6f1c8e5d2b4790b4e7a9c1f0d63825, type: 3}
     - target: {fileID: 1004, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
       propertyPath: tableManager
-      value:
+      value: 
       objectReference: {fileID: 4320}
     - target: {fileID: 1004, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
       propertyPath: waitingAreaManager
-      value:
+      value: 
+      objectReference: {fileID: 5373}
+    - target: {fileID: 1005, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
+      propertyPath: tableManager
+      value: 
+      objectReference: {fileID: 4320}
+    - target: {fileID: 1005, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
+      propertyPath: waitingAreaManager
+      value: 
       objectReference: {fileID: 5373}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

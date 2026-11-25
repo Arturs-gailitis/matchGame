@@ -49,6 +49,38 @@ public static class WaitingAreaMatchAnimation
         await completionSource.Task;
     }
 
+    /// <summary>Plays the match effect backwards so reset cars appear in their original cells.</summary>
+    public static async UniTask PlayReverseAsync(IReadOnlyList<CarInteraction> cars, Vector3 targetScale)
+    {
+        if (cars == null || cars.Count == 0)
+        {
+            return;
+        }
+
+        Sequence sequence = DOTween.Sequence();
+
+        foreach (CarInteraction car in cars)
+        {
+            if (car == null)
+            {
+                continue;
+            }
+
+            CanvasGroup canvasGroup = GetOrAddCanvasGroup(car.gameObject);
+            car.transform.localScale = targetScale * FinalScale;
+            canvasGroup.alpha = 0f;
+
+            Tweener scaleTween = car.transform.DOScale(targetScale, Duration).SetEase(Ease.OutBack);
+            Tweener fadeTween = canvasGroup.DOFade(1f, Duration).SetEase(Ease.OutBack);
+            _ = sequence.Join(scaleTween);
+            _ = sequence.Join(fadeTween);
+        }
+
+        var completionSource = new UniTaskCompletionSource();
+        sequence = sequence.OnComplete(() => completionSource.TrySetResult());
+        await completionSource.Task;
+    }
+
     private static CanvasGroup GetOrAddCanvasGroup(GameObject target)
     {
         CanvasGroup canvasGroup = target.GetComponent<CanvasGroup>();

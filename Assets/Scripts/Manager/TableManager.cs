@@ -29,6 +29,7 @@ public sealed class TableManager : MonoBehaviour
     public event Action LevelCompleted;
 
     private readonly Dictionary<Vector2Int, TableObject> objectsByCell = new Dictionary<Vector2Int, TableObject>();
+    private readonly Dictionary<CarInteraction, Vector2Int> originalCellsByCar = new Dictionary<CarInteraction, Vector2Int>();
     private readonly HashSet<CarInteraction> powerUpLockedNeighbors = new HashSet<CarInteraction>();
     private bool levelCompletionRaised;
     private bool isCarRemovalInProgress;
@@ -202,6 +203,7 @@ public sealed class TableManager : MonoBehaviour
         Vector2Int cell = new Vector2Int(car.x, car.y);
 
         objectsByCell.Add(cell, carInteraction);
+        originalCellsByCar.Add(carInteraction, cell);
         carInteraction.SetObjectState(ObjectState.Car);
         carInteraction.RemovalRequested += HandleCarRemoval;
 
@@ -335,11 +337,83 @@ public sealed class TableManager : MonoBehaviour
             }
 
             objectsByCell.Remove(cell);
+            originalCellsByCar.Remove(car);
             car.RemovalRequested -= HandleCarRemoval;
             car.SetState(CarState.Matched);
         }
 
         return matchingCars;
+    }
+
+    public async UniTask ResetWaitingCarsForPowerUp()
+    {
+        if (isCarRemovalInProgress || waitingAreaManager == null)
+        {
+            return;
+        }
+
+        List<CarInteraction> waitingCars = waitingAreaManager.GetWaitingCars();
+        waitingCars.RemoveAll(car => car == null || !originalCellsByCar.ContainsKey(car));
+
+        if (waitingCars.Count == 0)
+        {
+            return;
+        }
+
+        isCarRemovalInProgress = true;
+
+        foreach (CarInteraction car in waitingCars)
+        {
+            car.SetState(CarState.Blocked);
+        }
+
+        await WaitingAreaMatchAnimation.PlayAsync(waitingCars);
+
+        if (this == null)
+        {
+            return;
+        }
+
+        foreach (CarInteraction car in waitingCars)
+        {
+            if (car == null)
+            {
+                continue;
+            }
+
+            Vector2Int originalCell = originalCellsByCar[car];
+
+            if (objectsByCell.ContainsKey(originalCell))
+            {
+                car.GetComponent<RectTransform>().localScale = Vector3.one * carScale;
+                car.SetState(CarState.Waiting);
+                continue;
+            }
+
+            RectTransform carRect = car.GetComponent<RectTransform>();
+            carRect.SetParent(table.transform, false);
+            carRect.anchorMin = new Vector2(0.5f, 0.5f);
+            carRect.anchorMax = new Vector2(0.5f, 0.5f);
+            carRect.pivot = new Vector2(0.5f, 0.5f);
+            carRect.sizeDelta = table.CellSize;
+            carRect.anchoredPosition = table.GetCellCenter(originalCell.x, originalCell.y);
+            carRect.SetAsLastSibling();
+
+            objectsByCell.Add(originalCell, car);
+            car.RemovalRequested -= HandleCarRemoval;
+            car.RemovalRequested += HandleCarRemoval;
+        }
+
+        waitingAreaManager.CompactAfterReset();
+        await WaitingAreaMatchAnimation.PlayReverseAsync(waitingCars, Vector3.one * carScale);
+
+        if (this == null)
+        {
+            return;
+        }
+
+        isCarRemovalInProgress = false;
+        RefreshCarStates();
     }
 
     public void NotifyPowerUpRemovalCompleted()
@@ -452,6 +526,7 @@ public sealed class TableManager : MonoBehaviour
         }
 
         objectsByCell.Clear();
+        originalCellsByCar.Clear();
         powerUpLockedNeighbors.Clear();
         levelCompletionRaised = false;
         isCarRemovalInProgress = false;

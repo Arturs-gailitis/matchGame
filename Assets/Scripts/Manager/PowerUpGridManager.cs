@@ -7,9 +7,11 @@ using UnityEngine;
 public sealed class PowerUpGridManager : MonoBehaviour
 {
     [SerializeField] private PowerUpView powerUpPrefab;
-    [SerializeField] private PowerUpType[] powerUpTypes = {PowerUpType.Matches};
+    [SerializeField] private PowerUpType[] powerUpTypes = {PowerUpType.Matches, PowerUpType.Reset};
     [SerializeField] private Sprite matchesIcon;
+    [SerializeField] private Sprite resetIcon;
     [SerializeField] private MatchesPowerUp matchesPowerUp;
+    [SerializeField] private ResetPowerUp resetPowerUp;
 
     private readonly List<PowerUpView> spawnedPowerUps = new List<PowerUpView>();
 
@@ -54,7 +56,7 @@ public sealed class PowerUpGridManager : MonoBehaviour
 
     private void ConfigurePowerUp(PowerUpView powerUp, PowerUpType powerUpType)
     {
-        powerUp.SetContent(GetIcon(), () => HandlePowerUpSelected(powerUpType));
+        powerUp.SetContent(GetIcon(powerUpType), () => HandlePowerUpSelected(powerUpType));
     }
 
     private void HandlePowerUpSelected(PowerUpType powerUpType)
@@ -67,12 +69,26 @@ public sealed class PowerUpGridManager : MonoBehaviour
                     matchesPowerUp.Activate();
                 }
                 break;
+            case PowerUpType.Reset:
+                if (resetPowerUp != null)
+                {
+                    resetPowerUp.Activate();
+                }
+                break;
         }
     }
 
-    private Sprite GetIcon()
+    private Sprite GetIcon(PowerUpType powerUpType)
     {
-        return matchesIcon;
+        switch (powerUpType)
+        {
+            case PowerUpType.Matches:
+                return matchesIcon;
+            case PowerUpType.Reset:
+                return resetIcon;
+            default:
+                return null;
+        }
     }
 
     private void ClearPowerUps()
