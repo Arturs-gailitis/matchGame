@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Builds the cars for a level inside the Table child of the Grid prefab.
+/// Builds and manages all objects occupying cells in the level table.
 /// </summary>
 public sealed class TableManager : MonoBehaviour
 {
@@ -20,11 +20,7 @@ public sealed class TableManager : MonoBehaviour
 
     public event Action LevelCompleted;
 
-    private readonly List<GameObject> spawnedCars = new List<GameObject>();
-    private readonly List<GameObject> spawnedWalls = new List<GameObject>();
-    private readonly Dictionary<Vector2Int, CarInteraction> carsByCell = new Dictionary<Vector2Int, CarInteraction>();
-    private readonly Dictionary<Vector2Int, WallObstacle> wallsByCell = new Dictionary<Vector2Int, WallObstacle>();
-    private readonly Dictionary<Vector2Int, RectTransform> wallRectsByCell = new Dictionary<Vector2Int, RectTransform>();
+    private readonly Dictionary<Vector2Int, TableObject> objectsByCell = new Dictionary<Vector2Int, TableObject>();
     private bool levelCompletionRaised;
     private bool isCarRemovalInProgress;
 
@@ -116,7 +112,7 @@ public sealed class TableManager : MonoBehaviour
             {
                 Vector2Int cell = new Vector2Int(column, row);
 
-                if (carsByCell.ContainsKey(cell))
+                if (objectsByCell.ContainsKey(cell))
                 {
                     continue;
                 }
@@ -124,12 +120,10 @@ public sealed class TableManager : MonoBehaviour
                 GameObject wallObject = Instantiate(wallPrefab, table.transform, false);
                 wallObject.name = $"Wall_{column}_{row}";
                 wallObject.transform.SetAsFirstSibling();
-                spawnedWalls.Add(wallObject);
-
                 WallObstacle wallObstacle = wallObject.GetComponent<WallObstacle>();
 
                 wallObstacle.SetObjectState(ObjectState.Wall);
-                wallsByCell.Add(cell, wallObstacle);
+                objectsByCell.Add(cell, wallObstacle);
 
                 RectTransform wallRect = wallObject.GetComponent<RectTransform>();
 
@@ -138,11 +132,10 @@ public sealed class TableManager : MonoBehaviour
                 wallRect.pivot = new Vector2(0.5f, 0.5f);
                 wallRect.sizeDelta = table.CellSize;
                 wallRect.anchoredPosition = table.GetCellCenter(column, row);
-                wallRectsByCell.Add(cell, wallRect);
             }
         }
 
-        WallTextureContinuity.ApplyWallConnections(table, wallsByCell, wallRectsByCell, wallConnectionOverlap);
+        WallTextureContinuity.ApplyWallConnections(table, objectsByCell, wallConnectionOverlap);
     }
 
     private Dictionary<int, CarSpriteConfig> CreateConfigLookup()
@@ -190,8 +183,6 @@ public sealed class TableManager : MonoBehaviour
         GameObject carObject = instantiatedObject as GameObject;
 
         carObject.name = $"Car_{car.id}";
-        spawnedCars.Add(carObject);
-
         RectTransform carRect = carObject.GetComponent<RectTransform>();
         Image image = carObject.GetComponentInChildren<Image>(true);
         CarInteraction carInteraction = carObject.GetComponent<CarInteraction>();
@@ -199,7 +190,7 @@ public sealed class TableManager : MonoBehaviour
 
         Vector2Int cell = new Vector2Int(car.x, car.y);
 
-        carsByCell.Add(cell, carInteraction);
+        objectsByCell.Add(cell, carInteraction);
         carInteraction.SetObjectState(ObjectState.Car);
         carInteraction.RemovalRequested += HandleCarRemoval;
 
@@ -259,9 +250,8 @@ public sealed class TableManager : MonoBehaviour
             return;
         }
 
-        carsByCell.Remove(occupiedCell);
+        objectsByCell.Remove(occupiedCell);
         carInteraction.RemovalRequested -= HandleCarRemoval;
-        spawnedCars.Remove(carInteraction.gameObject);
         isCarRemovalInProgress = false;
         RefreshCarStates();
 
@@ -281,16 +271,9 @@ public sealed class TableManager : MonoBehaviour
 
     private bool HasRemainingCarObjects()
     {
-        foreach (GameObject spawnedObject in spawnedCars)
+        foreach (TableObject tableObject in objectsByCell.Values)
         {
-            if (spawnedObject == null)
-            {
-                continue;
-            }
-
-            CarInteraction carInteraction = spawnedObject.GetComponent<CarInteraction>();
-
-            if (carInteraction != null && carInteraction.ObjectState == ObjectState.Car)
+            if (tableObject != null && tableObject.ObjectState == ObjectState.Car)
             {
                 return true;
             }
@@ -301,32 +284,38 @@ public sealed class TableManager : MonoBehaviour
 
     private void RefreshCarStates()
     {
-        foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
+        foreach (KeyValuePair<Vector2Int, TableObject> entry in objectsByCell)
         {
-            CarState state = TryGetRemovalPath(entry.Key, entry.Value, out _) ? CarState.Removable : CarState.Blocked;
+            if (entry.Value == null || entry.Value.ObjectState != ObjectState.Car || !(entry.Value is CarInteraction carInteraction))
+            {
+                continue;
+            }
 
-            entry.Value.SetState(state);
+            CarState state = TryGetRemovalPath(entry.Key, carInteraction, out _) ? CarState.Removable : CarState.Blocked;
+
+            carInteraction.SetState(state);
         }
     }
 
-    private bool TryGetRemovalPath( Vector2Int startCell, CarInteraction movingCar, out List<Vector2Int> path)
+    private bool TryGetRemovalPath(Vector2Int startCell, CarInteraction movingCar, out List<Vector2Int> path)
     {
         return CarRemovalAnimation.TryFindPath(startCell, table, cell => IsCellBlocked(cell, movingCar), out path);
     }
 
     private bool IsCellBlocked(Vector2Int cell, CarInteraction movingCar)
     {
-        if (wallsByCell.TryGetValue(cell, out WallObstacle wall) && wall.ObjectState == ObjectState.Wall)
+        if (!objectsByCell.TryGetValue(cell, out TableObject tableObject) || tableObject == null)
         {
-            return true;
+            return false;
         }
 
-        return carsByCell.TryGetValue(cell, out CarInteraction car) && car != movingCar && car.ObjectState == ObjectState.Car;
+        return tableObject.ObjectState == ObjectState.Wall ||
+               (tableObject.ObjectState == ObjectState.Car && tableObject != movingCar);
     }
 
     private bool TryGetCarCell(CarInteraction carInteraction, out Vector2Int cell)
     {
-        foreach (KeyValuePair<Vector2Int, CarInteraction> entry in carsByCell)
+        foreach (KeyValuePair<Vector2Int, TableObject> entry in objectsByCell)
         {
             if (entry.Value != carInteraction)
             {
@@ -343,39 +332,22 @@ public sealed class TableManager : MonoBehaviour
 
     private void ClearGrid()
     {
-        for (int index = spawnedCars.Count - 1; index >= 0; index--)
+        foreach (TableObject tableObject in objectsByCell.Values)
         {
-            GameObject spawnedObject = spawnedCars[index];
-
-            if (spawnedObject != null)
+            if (tableObject == null)
             {
-                CarInteraction carInteraction = spawnedObject.GetComponent<CarInteraction>();
-
-                if (carInteraction != null)
-                {
-                    carInteraction.RemovalRequested -= HandleCarRemoval;
-                }
-
-                Destroy(spawnedObject);
+                continue;
             }
+
+            if (tableObject.ObjectState == ObjectState.Car && tableObject is CarInteraction carInteraction)
+            {
+                carInteraction.RemovalRequested -= HandleCarRemoval;
+            }
+
+            Destroy(tableObject.gameObject);
         }
 
-        spawnedCars.Clear();
-
-        for (int index = spawnedWalls.Count - 1; index >= 0; index--)
-        {
-            GameObject spawnedWall = spawnedWalls[index];
-
-            if (spawnedWall != null)
-            {
-                Destroy(spawnedWall);
-            }
-        }
-
-        spawnedWalls.Clear();
-        carsByCell.Clear();
-        wallsByCell.Clear();
-        wallRectsByCell.Clear();
+        objectsByCell.Clear();
         levelCompletionRaised = false;
         isCarRemovalInProgress = false;
     }

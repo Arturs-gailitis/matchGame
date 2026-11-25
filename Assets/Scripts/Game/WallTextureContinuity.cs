@@ -14,9 +14,9 @@ public sealed class WallTextureContinuity : BaseMeshEffect
 {
     private Rect patternRect = new Rect(0f, 0f, 1f, 1f);
 
-    public static void ApplyWallConnections(Table table, IReadOnlyDictionary<Vector2Int, WallObstacle> wallsByCell, IReadOnlyDictionary<Vector2Int, RectTransform> wallRectsByCell, float wallConnectionOverlap)
+    public static void ApplyWallConnections(Table table, IReadOnlyDictionary<Vector2Int, TableObject> objectsByCell, float wallConnectionOverlap)
     {
-        if (table == null || wallsByCell == null || wallRectsByCell == null)
+        if (table == null || objectsByCell == null)
         {
             return;
         }
@@ -24,20 +24,21 @@ public sealed class WallTextureContinuity : BaseMeshEffect
         float horizontalOverlap = table.CellSize.x * wallConnectionOverlap;
         float verticalOverlap = table.CellSize.y * wallConnectionOverlap;
 
-        foreach (KeyValuePair<Vector2Int, RectTransform> entry in wallRectsByCell)
+        foreach (KeyValuePair<Vector2Int, TableObject> entry in objectsByCell)
         {
             Vector2Int cell = entry.Key;
-            RectTransform wallRect = entry.Value;
+            TableObject tableObject = entry.Value;
 
-            if (wallRect == null)
+            if (tableObject == null || tableObject.ObjectState != ObjectState.Wall)
             {
                 continue;
             }
 
-            bool connectsLeft = wallsByCell.ContainsKey(cell + Vector2Int.left);
-            bool connectsRight = wallsByCell.ContainsKey(cell + Vector2Int.right);
-            bool connectsDown = wallsByCell.ContainsKey(cell + Vector2Int.down);
-            bool connectsUp = wallsByCell.ContainsKey(cell + Vector2Int.up);
+            RectTransform wallRect = tableObject.GetComponent<RectTransform>();
+            bool connectsLeft = IsWall(objectsByCell, cell + Vector2Int.left);
+            bool connectsRight = IsWall(objectsByCell, cell + Vector2Int.right);
+            bool connectsDown = IsWall(objectsByCell, cell + Vector2Int.down);
+            bool connectsUp = IsWall(objectsByCell, cell + Vector2Int.up);
 
             float leftExtension = connectsLeft ? horizontalOverlap : 0f;
             float rightExtension = connectsRight ? horizontalOverlap : 0f;
@@ -58,6 +59,13 @@ public sealed class WallTextureContinuity : BaseMeshEffect
 
             textureContinuity.SetPatternRect(new Rect(cell.x - leftExtension / table.CellSize.x, cell.y - downExtension / table.CellSize.y, wallSize.x / table.CellSize.x, wallSize.y / table.CellSize.y));
         }
+    }
+
+    private static bool IsWall(IReadOnlyDictionary<Vector2Int, TableObject> objectsByCell, Vector2Int cell)
+    {
+        return objectsByCell.TryGetValue(cell, out TableObject tableObject) &&
+               tableObject != null &&
+               tableObject.ObjectState == ObjectState.Wall;
     }
 
     public void SetPatternRect(Rect value)
