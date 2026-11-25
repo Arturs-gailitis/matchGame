@@ -12,8 +12,10 @@ public sealed class PowerUpGridManager : MonoBehaviour
     [SerializeField] private Sprite resetIcon;
     [SerializeField] private MatchesPowerUp matchesPowerUp;
     [SerializeField] private ResetPowerUp resetPowerUp;
+    [SerializeField] private TextAsset powerUpCostConfig;
 
     private readonly List<PowerUpView> spawnedPowerUps = new List<PowerUpView>();
+    private float nextRefreshTime;
 
     private void OnEnable()
     {
@@ -23,6 +25,17 @@ public sealed class PowerUpGridManager : MonoBehaviour
             return;
         }
 
+        RefreshPowerUps();
+    }
+
+    private void Update()
+    {
+        if (Time.unscaledTime < nextRefreshTime)
+        {
+            return;
+        }
+
+        nextRefreshTime = Time.unscaledTime + 0.25f;
         RefreshPowerUps();
     }
 
@@ -56,25 +69,59 @@ public sealed class PowerUpGridManager : MonoBehaviour
 
     private void ConfigurePowerUp(PowerUpView powerUp, PowerUpType powerUpType)
     {
-        powerUp.SetContent(GetIcon(powerUpType), () => HandlePowerUpSelected(powerUpType));
+        string costText = "N/A";
+        bool canAfford = false;
+
+        if (powerUpCostConfig != null && PowerUpCostReader.TryGetCost(powerUpCostConfig.text, powerUpType, out PowerUpCostConfig costConfig))
+        {
+            costText = costConfig.cost.ToString();
+            canAfford = PlayerStorage.GetCoins() >= costConfig.cost;
+        }
+
+        powerUp.SetContent(GetIcon(powerUpType), costText, canAfford, () => HandlePowerUpSelected(powerUpType));
     }
 
     private void HandlePowerUpSelected(PowerUpType powerUpType)
     {
+        if (powerUpType == PowerUpType.Matches && matchesPowerUp != null && matchesPowerUp.IsSelecting)
+        {
+            matchesPowerUp.TryActivate();
+            return;
+        }
+
+        if (powerUpCostConfig == null || !PowerUpCostReader.TryGetCost(powerUpCostConfig.text, powerUpType, out PowerUpCostConfig costConfig))
+        {
+            Debug.LogWarning($"PowerUpGridManager: no cost is configured for {powerUpType}.", this);
+            return;
+        }
+
+        if (PlayerStorage.GetCoins() < costConfig.cost)
+        {
+            Debug.Log($"PowerUpGridManager: not enough coins for {costConfig.powerUpName}. Cost: {costConfig.cost}.", this);
+            return;
+        }
+
+        bool activated = false;
+
         switch (powerUpType)
         {
             case PowerUpType.Matches:
                 if (matchesPowerUp != null)
                 {
-                    matchesPowerUp.Activate();
+                    matchesPowerUp.TryActivate(() => PlayerStorage.TrySpendCoins(costConfig.cost));
                 }
                 break;
             case PowerUpType.Reset:
                 if (resetPowerUp != null)
                 {
-                    resetPowerUp.Activate();
+                    activated = resetPowerUp.TryActivate();
                 }
                 break;
+        }
+
+        if (activated && PlayerStorage.TrySpendCoins(costConfig.cost))
+        {
+            Debug.Log($"PowerUpGridManager: activated {costConfig.powerUpName} for {costConfig.cost} coins. New balance: {PlayerStorage.GetCoins()}.", this);
         }
     }
 

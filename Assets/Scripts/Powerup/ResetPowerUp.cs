@@ -14,21 +14,22 @@ public sealed class ResetPowerUp : MonoBehaviour
         ResolveManagers();
     }
 
-    public void Activate()
+    public bool TryActivate()
     {
         if (isProcessing)
         {
-            return;
+            return false;
         }
 
         ResolveManagers();
 
         if (waitingAreaManager == null || tableManager == null || tableManager.IsCarRemovalInProgress || waitingAreaManager.GetWaitingCars().Count == 0)
         {
-            return;
+            return false;
         }
 
         ResetCars().Forget();
+        return true;
     }
 
     private async UniTask ResetCars()

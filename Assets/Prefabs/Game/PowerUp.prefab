@@ -65,6 +65,7 @@ GameObject:
   - component: {fileID: 2003}
   - component: {fileID: 2004}
   - component: {fileID: 2005}
+  - component: {fileID: 2006}
   m_Layer: 5
   m_Name: IconPlate
   m_TagString: Untagged
@@ -190,6 +191,21 @@ MonoBehaviour:
   pressedScale: 0.92
   pressDuration: 0.07
   releaseDuration: 0.12
+--- !u!114 &2006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b22bb8ea51f42839dd4f103b0c54967, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonTapSound
+  targetButton: {fileID: 2004}
+  tapSound: {fileID: 8300000, guid: 84fb297b3f06bdd40a0de903ec5e143e, type: 3}
+  volume: 1
 --- !u!1 &4000
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public static class PlayerStorage
 {
     private const string CurrentLevelKey = "Player.CurrentLevel";
     private const string CoinsKey = "Player.Coins";
+    private const int StartingCoins = 200;
 
     /// <summary>
     /// Gets the player's saved level, falling back to level 1.
@@ -33,11 +34,11 @@ public static class PlayerStorage
     }
 
     /// <summary>
-    /// Gets the player's saved coin amount, falling back to zero coins.
+    /// Gets the player's saved coin amount, falling back to the starting balance.
     /// </summary>
     public static int GetCoins()
     {
-        return Mathf.Max(0, PlayerPrefs.GetInt(CoinsKey, 0));
+        return Mathf.Max(0, PlayerPrefs.GetInt(CoinsKey, StartingCoins));
     }
 
     /// <summary>
@@ -63,5 +64,27 @@ public static class PlayerStorage
         int newBalance = Mathf.Max(0, GetCoins() + amount);
         SetCoins(newBalance);
         return newBalance;
+    }
+
+    /// <summary>
+    /// Removes coins when the player can afford the amount and returns whether the purchase succeeded.
+    /// </summary>
+    public static bool TrySpendCoins(int amount)
+    {
+        if (amount < 0)
+        {
+            Debug.LogWarning($"PlayerStorage: coin cost cannot be negative, received {amount}.");
+            return false;
+        }
+
+        int currentBalance = GetCoins();
+
+        if (currentBalance < amount)
+        {
+            return false;
+        }
+
+        SetCoins(currentBalance - amount);
+        return true;
     }
 }

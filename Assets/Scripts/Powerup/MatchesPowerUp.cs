@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ public sealed class MatchesPowerUp : MonoBehaviour
     private readonly List<CarInteraction> selectableCars = new List<CarInteraction>();
     private bool isSelecting;
     private bool isProcessing;
+    private Action activationHandler;
+
+    public bool IsSelecting => isSelecting;
 
     private void Awake()
     {
@@ -23,36 +27,39 @@ public sealed class MatchesPowerUp : MonoBehaviour
     private void OnDisable()
     {
         StopSelection();
+        activationHandler = null;
     }
 
-    public void Activate()
+    public bool TryActivate(Action onActivated = null)
     {
         if (isProcessing)
         {
-            return;
+            return false;
         }
 
         if (isSelecting)
         {
             StopSelection();
-            return;
+            activationHandler = null;
+            return false;
         }
 
         ResolveManagers();
 
         if (waitingAreaManager == null || tableManager == null || tableManager.IsCarRemovalInProgress)
         {
-            return;
+            return false;
         }
 
         selectableCars.AddRange(waitingAreaManager.GetWaitingCars());
 
         if (selectableCars.Count == 0)
         {
-            return;
+            return false;
         }
 
         isSelecting = true;
+        activationHandler = onActivated;
         WaitingCarPulseAnimation.Play(selectableCars);
 
         foreach (CarInteraction car in selectableCars)
@@ -62,6 +69,8 @@ public sealed class MatchesPowerUp : MonoBehaviour
                 car.WaitingSelectionRequested += HandleWaitingCarSelected;
             }
         }
+
+        return true;
     }
 
     private void HandleWaitingCarSelected(CarInteraction selectedCar)
@@ -71,7 +80,10 @@ public sealed class MatchesPowerUp : MonoBehaviour
             return;
         }
 
+        Action onActivated = activationHandler;
         StopSelection();
+        activationHandler = null;
+        onActivated?.Invoke();
         RemoveMatchingCars(selectedCar).Forget();
     }
 

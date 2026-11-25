@@ -12,13 +12,28 @@ public sealed class PowerUpView : MonoBehaviour
     [SerializeField] private Button button;
 
     private UnityAction clickHandler;
+    private Color defaultCostColor = Color.white;
 
-    public void SetContent(Sprite powerUpIcon, UnityAction onClick)
+    private void Awake()
+    {
+        if (costText != null)
+        {
+            defaultCostColor = costText.color;
+        }
+    }
+
+    public void SetContent(Sprite powerUpIcon, string cost, bool canAfford, UnityAction onClick)
     {
         if (icon != null)
         {
             icon.sprite = powerUpIcon;
             icon.enabled = powerUpIcon != null;
+        }
+
+        if (costText != null)
+        {
+            costText.text = cost ?? string.Empty;
+            costText.color = canAfford ? defaultCostColor : Color.red;
         }
 
         if (button != null)
