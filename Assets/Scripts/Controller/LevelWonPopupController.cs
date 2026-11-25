@@ -6,6 +6,7 @@ public sealed class LevelWonPopupController : MonoBehaviour
 {
     [SerializeField] private Button nextLevelButton;
     [SerializeField] private Button lobbyButton;
+    [SerializeField] private Text rewardAmountText;
 
     private LayoutManager layoutManager;
     private GameManager gameManager;
@@ -14,6 +15,11 @@ public sealed class LevelWonPopupController : MonoBehaviour
     {
         layoutManager = manager;
         gameManager = game;
+
+        if (rewardAmountText != null && gameManager != null)
+        {
+            rewardAmountText.text = gameManager.GetCurrentLevelReward().ToString();
+        }
     }
 
     private void Awake()

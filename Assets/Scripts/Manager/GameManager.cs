@@ -63,6 +63,16 @@ public sealed class GameManager : MonoBehaviour
         tableManager.SetLevel(currentLevel);
     }
 
+    public int GetCurrentLevelReward()
+    {
+        if (levelRewardConfig == null || !LevelRewardReader.TryGetReward(levelRewardConfig.text, currentLevel, out LevelRewardConfig reward))
+        {
+            return 0;
+        }
+
+        return reward.coins;
+    }
+
     public bool TryCommitNextLevel()
     {
         if (pendingNextLevel <= currentLevel)
