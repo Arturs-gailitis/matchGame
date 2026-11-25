@@ -9,6 +9,14 @@ using UnityEngine.UI;
 /// </summary>
 public sealed class TableManager : MonoBehaviour
 {
+    private static readonly Vector2Int[] AdjacentDirections =
+    {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right
+    };
+
     [SerializeField] private Table table;
     [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private GameObject carPrefab;
@@ -21,8 +29,11 @@ public sealed class TableManager : MonoBehaviour
     public event Action LevelCompleted;
 
     private readonly Dictionary<Vector2Int, TableObject> objectsByCell = new Dictionary<Vector2Int, TableObject>();
+    private readonly HashSet<CarInteraction> powerUpLockedNeighbors = new HashSet<CarInteraction>();
     private bool levelCompletionRaised;
     private bool isCarRemovalInProgress;
+
+    public bool IsCarRemovalInProgress => isCarRemovalInProgress;
 
     public void SetLevel(int level)
     {
@@ -282,6 +293,99 @@ public sealed class TableManager : MonoBehaviour
         return false;
     }
 
+    public List<CarInteraction> TakeNearestCarsForPowerUp(int carType, int count, Vector3 referencePosition)
+    {
+        var matchingCars = new List<CarInteraction>();
+
+        if (count <= 0)
+        {
+            return matchingCars;
+        }
+
+        foreach (TableObject tableObject in objectsByCell.Values)
+        {
+            if (tableObject is CarInteraction car && car.CarType == carType)
+            {
+                matchingCars.Add(car);
+            }
+        }
+
+        matchingCars.Sort((first, second) =>
+        {
+            float firstDistance = (first.transform.position - referencePosition).sqrMagnitude;
+            float secondDistance = (second.transform.position - referencePosition).sqrMagnitude;
+            return firstDistance.CompareTo(secondDistance);
+        });
+
+        if (matchingCars.Count > count)
+        {
+            matchingCars.RemoveRange(count, matchingCars.Count - count);
+        }
+
+        foreach (CarInteraction car in matchingCars)
+        {
+            if (!TryGetCarCell(car, out Vector2Int cell))
+            {
+                continue;
+            }
+
+            if (IsSurroundedByCarsOrWalls(cell))
+            {
+                RememberBlockedAdjacentCars(cell);
+            }
+
+            objectsByCell.Remove(cell);
+            car.RemovalRequested -= HandleCarRemoval;
+            car.SetState(CarState.Matched);
+        }
+
+        return matchingCars;
+    }
+
+    public void NotifyPowerUpRemovalCompleted()
+    {
+        RefreshCarStates();
+
+        foreach (CarInteraction car in powerUpLockedNeighbors)
+        {
+            if (car != null && TryGetCarCell(car, out _))
+            {
+                car.SetState(CarState.Blocked);
+            }
+        }
+
+        powerUpLockedNeighbors.Clear();
+        CheckLevelCompleted();
+    }
+
+    private bool IsSurroundedByCarsOrWalls(Vector2Int cell)
+    {
+        foreach (Vector2Int direction in AdjacentDirections)
+        {
+            Vector2Int adjacentCell = cell + direction;
+
+            if (!table.IsValidCell(adjacentCell.x, adjacentCell.y) || !objectsByCell.TryGetValue(adjacentCell, out TableObject adjacentObject) || adjacentObject == null || (adjacentObject.ObjectState != ObjectState.Car && adjacentObject.ObjectState != ObjectState.Wall))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void RememberBlockedAdjacentCars(Vector2Int cell)
+    {
+        foreach (Vector2Int direction in AdjacentDirections)
+        {
+            Vector2Int adjacentCell = cell + direction;
+
+            if (objectsByCell.TryGetValue(adjacentCell, out TableObject adjacentObject) && adjacentObject is CarInteraction adjacentCar && adjacentCar.State == CarState.Blocked)
+            {
+                powerUpLockedNeighbors.Add(adjacentCar);
+            }
+        }
+    }
+
     private void RefreshCarStates()
     {
         foreach (KeyValuePair<Vector2Int, TableObject> entry in objectsByCell)
@@ -348,6 +452,7 @@ public sealed class TableManager : MonoBehaviour
         }
 
         objectsByCell.Clear();
+        powerUpLockedNeighbors.Clear();
         levelCompletionRaised = false;
         isCarRemovalInProgress = false;
     }

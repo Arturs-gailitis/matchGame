@@ -38,6 +38,77 @@ public sealed class WaitingAreaManager : MonoBehaviour
         }
     }
 
+    public List<CarInteraction> GetWaitingCars()
+    {
+        var waitingCars = new List<CarInteraction>();
+
+        if (waitingArea == null)
+        {
+            return waitingCars;
+        }
+
+        for (int index = 0; index < waitingArea.childCount; index++)
+        {
+            CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
+
+            if (car != null && car.State == CarState.Waiting)
+            {
+                waitingCars.Add(car);
+            }
+        }
+
+        return waitingCars;
+    }
+
+    public List<CarInteraction> GetWaitingCarsByType(int carType)
+    {
+        List<CarInteraction> waitingCars = GetWaitingCars();
+        waitingCars.RemoveAll(car => car == null || car.CarType != carType);
+        return waitingCars;
+    }
+
+    public async UniTask RemoveCarsForPowerUp(IReadOnlyList<CarInteraction> carsToRemove)
+    {
+        if (waitingArea == null || carsToRemove == null || carsToRemove.Count == 0)
+        {
+            return;
+        }
+
+        var remainingCars = new List<CarInteraction>();
+        var removedCars = new HashSet<CarInteraction>(carsToRemove);
+
+        for (int index = 0; index < waitingArea.childCount; index++)
+        {
+            CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
+
+            if (car == null)
+            {
+                continue;
+            }
+
+            if (removedCars.Contains(car))
+            {
+                Destroy(car.gameObject);
+            }
+            else if (car.State == CarState.Waiting)
+            {
+                remainingCars.Add(car);
+            }
+        }
+
+        await UniTask.Yield();
+
+        for (int index = 0; index < remainingCars.Count; index++)
+        {
+            MoveCarToSlot(remainingCars[index], waitingArea.GetChild(index));
+        }
+
+        if (IsEmpty)
+        {
+            BecameEmpty?.Invoke();
+        }
+    }
+
     public async UniTask<bool> TryMoveCar(CarInteraction carInteraction)
     {
         if (carInteraction == null)

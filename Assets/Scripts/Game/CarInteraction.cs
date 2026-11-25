@@ -16,6 +16,7 @@ public sealed class CarInteraction : TableObject
     public CarState State => state;
     public int CarType => carType;
     public event Action<CarInteraction> RemovalRequested;
+    public event Action<CarInteraction> WaitingSelectionRequested;
 
     private void Awake()
     {
@@ -39,6 +40,12 @@ public sealed class CarInteraction : TableObject
 
     private void HandleClick()
     {
+        if (state == CarState.Waiting)
+        {
+            WaitingSelectionRequested?.Invoke(this);
+            return;
+        }
+
         if (state != CarState.Removable)
         {
             return;
