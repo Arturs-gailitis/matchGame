@@ -8,7 +8,11 @@ public static class PlayerStorage
 {
     private const string CurrentLevelKey = "Player.CurrentLevel";
     private const string CoinsKey = "Player.Coins";
+    private const string ProfileImageKey = "Player.ProfileImage";
+    private const string PlayerNameKey = "Player.Name";
     private const int StartingCoins = 200;
+    private const string DefaultProfileImage = "cyan";
+    private const string DefaultPlayerName = "Player";
 
     /// <summary>
     /// Gets the player's saved level, falling back to level 1.
@@ -39,6 +43,46 @@ public static class PlayerStorage
     public static int GetCoins()
     {
         return Mathf.Max(0, PlayerPrefs.GetInt(CoinsKey, StartingCoins));
+    }
+
+    /// <summary>Gets the selected profile image name.</summary>
+    public static string GetProfileImageName()
+    {
+        return PlayerPrefs.GetString(ProfileImageKey, DefaultProfileImage);
+    }
+
+    /// <summary>Saves the selected profile image name immediately.</summary>
+    public static void SetProfileImageName(string imageName)
+    {
+        if (string.IsNullOrWhiteSpace(imageName))
+        {
+            Debug.LogWarning("PlayerStorage: profile image name cannot be empty.");
+            return;
+        }
+
+        PlayerPrefs.SetString(ProfileImageKey, imageName);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>Gets the player's saved display name.</summary>
+    public static string GetPlayerName()
+    {
+        return PlayerPrefs.GetString(PlayerNameKey, DefaultPlayerName);
+    }
+
+    /// <summary>Saves the player's display name immediately.</summary>
+    public static void SetPlayerName(string playerName)
+    {
+        string normalizedName = playerName?.Trim();
+
+        if (string.IsNullOrEmpty(normalizedName))
+        {
+            Debug.LogWarning("PlayerStorage: player name cannot be empty.");
+            return;
+        }
+
+        PlayerPrefs.SetString(PlayerNameKey, normalizedName);
+        PlayerPrefs.Save();
     }
 
     /// <summary>

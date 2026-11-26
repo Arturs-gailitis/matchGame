@@ -59,9 +59,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeaderManager
   sectionPrefab: {fileID: 1002, guid: 7f2a5d8c1e4b4093a6c9f2d5b8e10473, type: 3}
-  sectionTypes:
-  - 0
-  - 1
+  profilePrefab: {fileID: 1004, guid: 6c1f2b809d84442ca2035ea55ab54d83, type: 3}
+  profileEditPopupPrefab: {fileID: 1000, guid: 81be46a02d584b9ca51f97f2da9c0418, type: 3}
+  sectionTypes: 020000000000000001000000
   coinIcon: {fileID: 21300000, guid: 3b7d9f1a5c2e4d6f8a0b1c3e5f7d9a24, type: 3}
   energyIcon: {fileID: 21300000, guid: d2bd87276c9a43f9b4a5e871bdba1a40, type: 3}
 --- !u!114 &1004

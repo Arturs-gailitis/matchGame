@@ -4,5 +4,6 @@
 public enum HeaderSectionType
 {
     Coin = 0,
-    Energy = 1
+    Energy = 1,
+    Profile = 2
 }
