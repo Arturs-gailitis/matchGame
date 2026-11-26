@@ -962,6 +962,18 @@ PrefabInstance:
       propertyPath: powerUpPrefab
       value: 
       objectReference: {fileID: 1005, guid: 3a6f1c8e5d2b4790b4e7a9c1f0d63825, type: 3}
+    - target: {fileID: 1003, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
+      propertyPath: powerUpTypes.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1003, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
+      propertyPath: 'powerUpTypes.Array.data[1]'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1003, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
+      propertyPath: 'powerUpTypes.Array.data[2]'
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1004, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
       propertyPath: tableManager
       value: 
@@ -978,6 +990,10 @@ PrefabInstance:
       propertyPath: waitingAreaManager
       value: 
       objectReference: {fileID: 5373}
+    - target: {fileID: 1006, guid: 8d4d0f7a6b1c4e2f9a3d5c7b1e0f2468, type: 3}
+      propertyPath: tableManager
+      value: 
+      objectReference: {fileID: 4320}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -7,11 +7,13 @@ using UnityEngine;
 public sealed class PowerUpGridManager : MonoBehaviour
 {
     [SerializeField] private PowerUpView powerUpPrefab;
-    [SerializeField] private PowerUpType[] powerUpTypes = {PowerUpType.Matches, PowerUpType.Reset};
+    [SerializeField] private PowerUpType[] powerUpTypes = {PowerUpType.Matches, PowerUpType.Reset, PowerUpType.Reshuffle};
     [SerializeField] private Sprite matchesIcon;
     [SerializeField] private Sprite resetIcon;
+    [SerializeField] private Sprite reshuffleIcon;
     [SerializeField] private MatchesPowerUp matchesPowerUp;
     [SerializeField] private ResetPowerUp resetPowerUp;
+    [SerializeField] private ReshufflePowerUp reshufflePowerUp;
     [SerializeField] private TextAsset powerUpCostConfig;
 
     private readonly List<PowerUpView> spawnedPowerUps = new List<PowerUpView>();
@@ -117,6 +119,12 @@ public sealed class PowerUpGridManager : MonoBehaviour
                     activated = resetPowerUp.TryActivate();
                 }
                 break;
+            case PowerUpType.Reshuffle:
+                if (reshufflePowerUp != null)
+                {
+                    activated = reshufflePowerUp.TryActivate();
+                }
+                break;
         }
 
         if (activated && PlayerStorage.TrySpendCoins(costConfig.cost))
@@ -133,6 +141,8 @@ public sealed class PowerUpGridManager : MonoBehaviour
                 return matchesIcon;
             case PowerUpType.Reset:
                 return resetIcon;
+            case PowerUpType.Reshuffle:
+                return reshuffleIcon;
             default:
                 return null;
         }

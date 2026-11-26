@@ -416,6 +416,103 @@ public sealed class TableManager : MonoBehaviour
         RefreshCarStates();
     }
 
+    public bool TryReshuffleCarsForPowerUp()
+    {
+        if (isCarRemovalInProgress)
+        {
+            return false;
+        }
+
+        var carCells = new List<Vector2Int>();
+        var cars = new List<CarInteraction>();
+
+        foreach (KeyValuePair<Vector2Int, TableObject> entry in objectsByCell)
+        {
+            if (entry.Value is CarInteraction car && car.ObjectState == ObjectState.Car)
+            {
+                carCells.Add(entry.Key);
+                cars.Add(car);
+            }
+        }
+
+        if (cars.Count < 2)
+        {
+            return false;
+        }
+
+        isCarRemovalInProgress = true;
+
+        foreach (CarInteraction car in cars)
+        {
+            car.SetState(CarState.Blocked);
+        }
+
+        ReshuffleCarsAfterAnimation(carCells, cars).Forget();
+        return true;
+    }
+
+    private async UniTask ReshuffleCarsAfterAnimation(List<Vector2Int> carCells, List<CarInteraction> cars)
+    {
+        await WaitingAreaMatchAnimation.PlayAsync(cars);
+
+        if (this == null)
+        {
+            return;
+        }
+
+        for (int index = cars.Count - 1; index > 0; index--)
+        {
+            int swapIndex = UnityEngine.Random.Range(0, index + 1);
+            CarInteraction temporary = cars[index];
+            cars[index] = cars[swapIndex];
+            cars[swapIndex] = temporary;
+        }
+
+        bool anyCarMoved = false;
+
+        for (int index = 0; index < cars.Count; index++)
+        {
+            if (objectsByCell[carCells[index]] != cars[index])
+            {
+                anyCarMoved = true;
+                break;
+            }
+        }
+
+        if (!anyCarMoved)
+        {
+            CarInteraction temporary = cars[0];
+            cars[0] = cars[1];
+            cars[1] = temporary;
+        }
+
+        foreach (Vector2Int cell in carCells)
+        {
+            objectsByCell.Remove(cell);
+        }
+
+        for (int index = 0; index < cars.Count; index++)
+        {
+            Vector2Int cell = carCells[index];
+            CarInteraction car = cars[index];
+            objectsByCell.Add(cell, car);
+
+            RectTransform carRect = car.GetComponent<RectTransform>();
+            carRect.anchoredPosition = table.GetCellCenter(cell.x, cell.y);
+            carRect.SetAsLastSibling();
+        }
+
+        await WaitingAreaMatchAnimation.PlayReverseAsync(cars, Vector3.one * carScale);
+
+        if (this == null)
+        {
+            return;
+        }
+
+        isCarRemovalInProgress = false;
+        RefreshCarStates();
+    }
+
     public void NotifyPowerUpRemovalCompleted()
     {
         RefreshCarStates();
