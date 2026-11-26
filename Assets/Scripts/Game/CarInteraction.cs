@@ -17,6 +17,7 @@ public sealed class CarInteraction : TableObject
     public int CarType => carType;
     public event Action<CarInteraction> RemovalRequested;
     public event Action<CarInteraction> WaitingSelectionRequested;
+    public event Action<CarInteraction> ExtraStorageSelectionRequested;
 
     private void Awake()
     {
@@ -43,6 +44,12 @@ public sealed class CarInteraction : TableObject
         if (state == CarState.Waiting)
         {
             WaitingSelectionRequested?.Invoke(this);
+            return;
+        }
+
+        if (state == CarState.ExtraStorage)
+        {
+            ExtraStorageSelectionRequested?.Invoke(this);
             return;
         }
 

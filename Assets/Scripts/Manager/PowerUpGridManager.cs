@@ -7,13 +7,15 @@ using UnityEngine;
 public sealed class PowerUpGridManager : MonoBehaviour
 {
     [SerializeField] private PowerUpView powerUpPrefab;
-    [SerializeField] private PowerUpType[] powerUpTypes = {PowerUpType.Matches, PowerUpType.Reset, PowerUpType.Reshuffle};
+    [SerializeField] private PowerUpType[] powerUpTypes = {PowerUpType.Matches, PowerUpType.Reset, PowerUpType.Reshuffle, PowerUpType.ExtraStorage};
     [SerializeField] private Sprite matchesIcon;
     [SerializeField] private Sprite resetIcon;
     [SerializeField] private Sprite reshuffleIcon;
+    [SerializeField] private Sprite extraStorageIcon;
     [SerializeField] private MatchesPowerUp matchesPowerUp;
     [SerializeField] private ResetPowerUp resetPowerUp;
     [SerializeField] private ReshufflePowerUp reshufflePowerUp;
+    [SerializeField] private ExtraStoragePowerUp extraStoragePowerUp;
     [SerializeField] private TextAsset powerUpCostConfig;
 
     private readonly List<PowerUpView> spawnedPowerUps = new List<PowerUpView>();
@@ -125,6 +127,12 @@ public sealed class PowerUpGridManager : MonoBehaviour
                     activated = reshufflePowerUp.TryActivate();
                 }
                 break;
+            case PowerUpType.ExtraStorage:
+                if (extraStoragePowerUp != null)
+                {
+                    activated = extraStoragePowerUp.TryActivate();
+                }
+                break;
         }
 
         if (activated && PlayerStorage.TrySpendCoins(costConfig.cost))
@@ -143,6 +151,8 @@ public sealed class PowerUpGridManager : MonoBehaviour
                 return resetIcon;
             case PowerUpType.Reshuffle:
                 return reshuffleIcon;
+            case PowerUpType.ExtraStorage:
+                return extraStorageIcon;
             default:
                 return null;
         }

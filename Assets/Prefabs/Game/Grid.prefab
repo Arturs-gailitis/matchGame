@@ -177,9 +177,16 @@ RectTransform:
   - {fileID: 2261}
   - {fileID: 2260}
   - {fileID: 2263}
+  - {fileID: 2270}
+  - {fileID: 2271}
+  - {fileID: 2272}
+  - {fileID: 2273}
+  - {fileID: 2274}
+  - {fileID: 2275}
+  - {fileID: 2276}
   m_Father: {fileID: 1001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMin: {x: 0, y: 0.175}
   m_AnchorMax: {x: 1, y: 0.325}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -241,7 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   columns: 7
-  rows: 1
+  rows: 2
 --- !u!114 &4005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,6 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waitingArea: {fileID: 4001}
+  regularSlotCount: 7
   carScale: 0.8
 --- !u!1001 &7000
 PrefabInstance:
@@ -493,4 +501,186 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
   m_PrefabInstance: {fileID: 7006}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7010
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2270 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7010}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7011
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2271 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7011}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7012
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2272 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7012}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7013
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2273 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7013}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7014
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2274 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7014}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7015
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2275 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7015}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7016
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4001}
+    m_Modifications:
+    - target: {fileID: 5000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Name
+      value: ExtraStorageSlot_7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+--- !u!224 &2276 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001, guid: 4d8c9f2b7a5e4c6d91f3b8a2e6c0d417, type: 3}
+  m_PrefabInstance: {fileID: 7016}
   m_PrefabAsset: {fileID: 0}

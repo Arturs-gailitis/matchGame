@@ -9,24 +9,27 @@ using UnityEngine;
 public sealed class WaitingAreaManager : MonoBehaviour
 {
     [SerializeField] private Transform waitingArea;
+    [SerializeField, Min(1)] private int regularSlotCount = 7;
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
 
     public event Action BecameEmpty;
     public event Action LevelLost;
 
     private bool restartRequestPending;
+    private bool isStorageMoveInProgress;
 
     public bool IsEmpty => waitingArea != null && waitingArea.GetComponentInChildren<CarInteraction>(true) == null;
+    private int RegularSlotCount => waitingArea == null ? 0 : Mathf.Min(regularSlotCount, waitingArea.childCount);
     public bool HasFreeSlot
     {
         get
         {
-            if (waitingArea == null)
+            if (waitingArea == null || isStorageMoveInProgress)
             {
                 return false;
             }
 
-            for (int index = 0; index < waitingArea.childCount; index++)
+            for (int index = 0; index < RegularSlotCount; index++)
             {
                 if (waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true) == null)
                 {
@@ -47,7 +50,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
             return waitingCars;
         }
 
-        for (int index = 0; index < waitingArea.childCount; index++)
+        for (int index = 0; index < RegularSlotCount; index++)
         {
             CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
 
@@ -77,7 +80,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
         var remainingCars = new List<CarInteraction>();
         var removedCars = new HashSet<CarInteraction>(carsToRemove);
 
-        for (int index = 0; index < waitingArea.childCount; index++)
+        for (int index = 0; index < RegularSlotCount; index++)
         {
             CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
 
@@ -133,12 +136,12 @@ public sealed class WaitingAreaManager : MonoBehaviour
 
     public async UniTask<bool> TryMoveCar(CarInteraction carInteraction)
     {
-        if (carInteraction == null)
+        if (carInteraction == null || isStorageMoveInProgress)
         {
             return false;
         }
 
-        for (int index = 0; index < waitingArea.childCount; index++)
+        for (int index = 0; index < RegularSlotCount; index++)
         {
             Transform slot = waitingArea.GetChild(index);
 
@@ -187,11 +190,165 @@ public sealed class WaitingAreaManager : MonoBehaviour
         carRect.SetAsLastSibling();
     }
 
+    public bool CanMoveWaitingCarsToExtraStorage()
+    {
+        if (waitingArea == null || isStorageMoveInProgress)
+        {
+            return false;
+        }
+
+        int waitingCarCount = GetWaitingCars().Count;
+        return waitingCarCount > 0 && GetFreeExtraStorageSlotCount() >= waitingCarCount;
+    }
+
+    public async UniTask MoveWaitingCarsToExtraStorage()
+    {
+        if (!CanMoveWaitingCarsToExtraStorage())
+        {
+            return;
+        }
+
+        isStorageMoveInProgress = true;
+        List<CarInteraction> waitingCars = GetWaitingCars();
+        int extraSlotIndex = RegularSlotCount;
+
+        foreach (CarInteraction car in waitingCars)
+        {
+            while (extraSlotIndex < waitingArea.childCount && waitingArea.GetChild(extraSlotIndex).GetComponentInChildren<CarInteraction>(true) != null)
+            {
+                extraSlotIndex++;
+            }
+
+            if (extraSlotIndex >= waitingArea.childCount)
+            {
+                break;
+            }
+
+            Transform slot = waitingArea.GetChild(extraSlotIndex++);
+            await WaitingSlotMoveAnimation.PlayAsync(car.GetComponent<RectTransform>(), slot as RectTransform);
+
+            if (this == null || car == null || slot == null)
+            {
+                return;
+            }
+
+            MoveCarToSlot(car, slot);
+            car.SetState(CarState.ExtraStorage);
+            car.ExtraStorageSelectionRequested -= HandleExtraStorageCarSelected;
+            car.ExtraStorageSelectionRequested += HandleExtraStorageCarSelected;
+        }
+
+        restartRequestPending = false;
+        isStorageMoveInProgress = false;
+    }
+
+    private void HandleExtraStorageCarSelected(CarInteraction car)
+    {
+        if (isStorageMoveInProgress || car == null || car.State != CarState.ExtraStorage)
+        {
+            return;
+        }
+
+        Transform freeSlot = GetFirstFreeRegularSlot();
+
+        if (freeSlot != null)
+        {
+            MoveExtraStorageCarToWaiting(car, freeSlot).Forget();
+        }
+    }
+
+    private async UniTask MoveExtraStorageCarToWaiting(CarInteraction car, Transform slot)
+    {
+        isStorageMoveInProgress = true;
+        int storageSlotIndex = car.transform.parent.GetSiblingIndex();
+        car.SetState(CarState.Blocked);
+        await WaitingAreaMatchAnimation.PlayAsync(new[] {car});
+
+        if (this == null || car == null || slot == null)
+        {
+            return;
+        }
+
+        car.ExtraStorageSelectionRequested -= HandleExtraStorageCarSelected;
+        MoveCarToSlot(car, slot);
+        await CompactExtraStorageFromSlot(storageSlotIndex);
+
+        if (this == null || car == null)
+        {
+            return;
+        }
+
+        await WaitingAreaMatchAnimation.PlayReverseAsync(new[] {car}, Vector3.one * carScale);
+
+        if (this == null || car == null)
+        {
+            return;
+        }
+
+        MatchWaitingCars();
+        isStorageMoveInProgress = false;
+    }
+
+    private async UniTask CompactExtraStorageFromSlot(int emptySlotIndex)
+    {
+        for (int index = emptySlotIndex + 1; index < waitingArea.childCount; index++)
+        {
+            Transform sourceSlot = waitingArea.GetChild(index);
+            CarInteraction storedCar = sourceSlot.GetComponentInChildren<CarInteraction>(true);
+
+            if (storedCar == null || storedCar.State != CarState.ExtraStorage)
+            {
+                continue;
+            }
+
+            Transform targetSlot = waitingArea.GetChild(index - 1);
+            await WaitingSlotMoveAnimation.PlayAsync(storedCar.GetComponent<RectTransform>(), targetSlot as RectTransform);
+
+            if (this == null || storedCar == null || targetSlot == null)
+            {
+                return;
+            }
+
+            MoveCarToSlot(storedCar, targetSlot);
+            storedCar.SetState(CarState.ExtraStorage);
+        }
+    }
+
+    private Transform GetFirstFreeRegularSlot()
+    {
+        for (int index = 0; index < RegularSlotCount; index++)
+        {
+            Transform slot = waitingArea.GetChild(index);
+
+            if (slot.GetComponentInChildren<CarInteraction>(true) == null)
+            {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
+    private int GetFreeExtraStorageSlotCount()
+    {
+        int freeSlotCount = 0;
+
+        for (int index = RegularSlotCount; index < waitingArea.childCount; index++)
+        {
+            if (waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true) == null)
+            {
+                freeSlotCount++;
+            }
+        }
+
+        return freeSlotCount;
+    }
+
     private bool MatchWaitingCars()
     {
         var carsByType = new Dictionary<int, List<CarInteraction>>();
 
-        for (int index = 0; index < waitingArea.childCount; index++)
+        for (int index = 0; index < RegularSlotCount; index++)
         {
             CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
 
@@ -240,12 +397,12 @@ public sealed class WaitingAreaManager : MonoBehaviour
 
     private bool AreAllSlotsFilled()
     {
-        if (waitingArea == null || waitingArea.childCount == 0)
+        if (waitingArea == null || RegularSlotCount == 0)
         {
             return false;
         }
 
-        for (int index = 0; index < waitingArea.childCount; index++)
+        for (int index = 0; index < RegularSlotCount; index++)
         {
             if (waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true) == null)
             {
@@ -271,6 +428,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
 
             if (car != null)
             {
+                car.ExtraStorageSelectionRequested -= HandleExtraStorageCarSelected;
                 Destroy(car.gameObject);
             }
         }
@@ -280,7 +438,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
     {
         await UniTask.Yield();
 
-        if (this == null || !AreAllSlotsFilled())
+        if (this == null || isStorageMoveInProgress || !AreAllSlotsFilled())
         {
             restartRequestPending = false;
             return;
@@ -306,7 +464,7 @@ public sealed class WaitingAreaManager : MonoBehaviour
 
         var waitingCars = new List<CarInteraction>();
 
-        for (int index = 0; index < waitingArea.childCount; index++)
+        for (int index = 0; index < RegularSlotCount; index++)
         {
             CarInteraction car = waitingArea.GetChild(index).GetComponentInChildren<CarInteraction>(true);
 

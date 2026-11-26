@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1004}
   - component: {fileID: 1005}
   - component: {fileID: 1006}
+  - component: {fileID: 1007}
   m_Layer: 5
   m_Name: PowerUpGrid
   m_TagString: Untagged
@@ -63,7 +64,7 @@ MonoBehaviour:
   m_CellSize: {x: 160, y: 180}
   m_Spacing: {x: 24, y: 0}
   m_Constraint: 1
-  m_ConstraintCount: 3
+  m_ConstraintCount: 4
 --- !u!114 &1003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,13 +78,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpGridManager
   powerUpPrefab: {fileID: 1005, guid: 3a6f1c8e5d2b4790b4e7a9c1f0d63825, type: 3}
-  powerUpTypes: 000000000100000002000000
+  powerUpTypes: 00000000010000000200000003000000
   matchesIcon: {fileID: 21300000, guid: e5b71c3a9d2f4680a4c6f1b8d3e92547, type: 3}
   resetIcon: {fileID: 21300000, guid: 91c3e5a7b9d24f6081a3c5e7b9d10246, type: 3}
   reshuffleIcon: {fileID: 21300000, guid: 4d05dca4b2c44946b8596c768eae3cf1, type: 3}
+  extraStorageIcon: {fileID: 21300000, guid: a39d87c42e8f4b19a5c3d12f6e7084ba, type: 3}
   matchesPowerUp: {fileID: 1004}
   resetPowerUp: {fileID: 1005}
   reshufflePowerUp: {fileID: 1006}
+  extraStoragePowerUp: {fileID: 1007}
   powerUpCostConfig: {fileID: 4900000, guid: c8f74f0569374f6981c83d83a957b17d, type: 3}
 --- !u!114 &1004
 MonoBehaviour:
@@ -97,6 +100,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f2a9c4e1b7d4380a5e3c8f9d1b62457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchesPowerUp
+  waitingAreaManager: {fileID: 0}
+  tableManager: {fileID: 0}
+--- !u!114 &1007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b61a3f78c2de4c2a90c11a78271df4e8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ExtraStoragePowerUp
   waitingAreaManager: {fileID: 0}
   tableManager: {fileID: 0}
 --- !u!114 &1006
