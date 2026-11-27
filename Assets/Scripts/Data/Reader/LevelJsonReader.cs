@@ -38,6 +38,7 @@ public static class LevelJsonReader
         }
 
         level.cars ??= Array.Empty<LevelCarData>();
+        level.pipes ??= Array.Empty<LevelPipeData>();
 
         return level;
     }

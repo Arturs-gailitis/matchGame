@@ -291,5 +291,95 @@
       "y": 7,
       "type": 4
     }
+  ],
+  "pipes": [
+    {
+      "color": "#3D8496",
+      "blockedPositions": [
+        {
+          "x": 1,
+          "y": 6
+        },
+        {
+          "x": 2,
+          "y": 6
+        },
+        {
+          "x": 3,
+          "y": 6
+        }
+      ],
+      "keyPosition": {
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "color": "#D95D5D",
+      "blockedPositions": [
+        {
+          "x": 2,
+          "y": 2
+        },
+        {
+          "x": 2,
+          "y": 3
+        },
+        {
+          "x": 2,
+          "y": 4
+        },
+        {
+          "x": 2,
+          "y": 5
+        }
+      ],
+      "keyPosition": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "color": "#58A65C",
+      "blockedPositions": [
+        {
+          "x": 3,
+          "y": 1
+        },
+        {
+          "x": 4,
+          "y": 1
+        },
+        {
+          "x": 5,
+          "y": 1
+        }
+      ],
+      "keyPosition": {
+        "x": 6,
+        "y": 2
+      }
+    },
+    {
+      "color": "#9A6AD6",
+      "blockedPositions": [
+        {
+          "x": 6,
+          "y": 4
+        },
+        {
+          "x": 6,
+          "y": 5
+        },
+        {
+          "x": 6,
+          "y": 6
+        }
+      ],
+      "keyPosition": {
+        "x": 0,
+        "y": 5
+      }
+    }
   ]
 }

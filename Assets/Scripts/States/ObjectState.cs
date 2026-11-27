@@ -3,7 +3,8 @@ using UnityEngine;
 public enum ObjectState
 {
     Car,
-    Wall
+    Wall,
+    Pipe
 }
 
 /// <summary>

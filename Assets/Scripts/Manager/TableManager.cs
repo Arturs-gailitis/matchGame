@@ -21,6 +21,7 @@ public sealed class TableManager : MonoBehaviour
     [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private GameObject carPrefab;
     [SerializeField] private GameObject wallPrefab;
+    [SerializeField] private Sprite pipeKeySprite;
     [SerializeField] private TextAsset carSpriteConfig;
     [SerializeField] private Sprite[] carSprites;
     [SerializeField, Range(0.5f, 1f)] private float carScale = 0.8f;
@@ -30,11 +31,16 @@ public sealed class TableManager : MonoBehaviour
 
     private readonly Dictionary<Vector2Int, TableObject> objectsByCell = new Dictionary<Vector2Int, TableObject>();
     private readonly Dictionary<CarInteraction, Vector2Int> originalCellsByCar = new Dictionary<CarInteraction, Vector2Int>();
+    private readonly Dictionary<CarInteraction, int> pipeLockCounts = new Dictionary<CarInteraction, int>();
+    private readonly Dictionary<CarInteraction, int> activePipeKeyCounts = new Dictionary<CarInteraction, int>();
+    private readonly HashSet<CarInteraction> pipeRevealLockedCars = new HashSet<CarInteraction>();
+    private readonly List<PipeObstacle> pipeObstacles = new List<PipeObstacle>();
     private readonly HashSet<CarInteraction> powerUpLockedNeighbors = new HashSet<CarInteraction>();
     private bool levelCompletionRaised;
     private bool isCarRemovalInProgress;
 
     public bool IsCarRemovalInProgress => isCarRemovalInProgress;
+    public Sprite PipeKeySprite => pipeKeySprite;
 
     public void SetLevel(int level)
     {
@@ -64,7 +70,7 @@ public sealed class TableManager : MonoBehaviour
     {
         ClearGrid();
 
-        if (table == null || waitingAreaManager == null || carPrefab == null || wallPrefab == null || carSpriteConfig == null)
+        if (table == null || waitingAreaManager == null || carPrefab == null || wallPrefab == null || pipeKeySprite == null || carSpriteConfig == null)
         {
             Debug.LogError("TableManager: something is missing.", this);
             return;
@@ -112,8 +118,32 @@ public sealed class TableManager : MonoBehaviour
             CreateCar(car, sprite);
         }
 
+        CreatePipeObstacles(level.pipes);
         CreateWallsForEmptyCells();
         RefreshCarStates();
+    }
+
+    private void CreatePipeObstacles(IEnumerable<LevelPipeData> pipeDataEntries)
+    {
+        int pipeIndex = 0;
+
+        foreach (LevelPipeData pipeData in pipeDataEntries)
+        {
+            pipeIndex++;
+            GameObject pipeObject = new GameObject($"Pipe_{pipeIndex}", typeof(RectTransform), typeof(PipeObstacle));
+            pipeObject.transform.SetParent(table.transform, false);
+            PipeObstacle pipeObstacle = pipeObject.GetComponent<PipeObstacle>();
+
+            if (pipeObstacle.TryInitialize(this, table, pipeData, pipeIndex))
+            {
+                pipeObstacles.Add(pipeObstacle);
+            }
+            else
+            {
+                Debug.LogError($"TableManager: pipe {pipeIndex} has invalid configuration and was skipped.", this);
+                Destroy(pipeObject);
+            }
+        }
     }
 
     private void CreateWallsForEmptyCells()
@@ -306,7 +336,7 @@ public sealed class TableManager : MonoBehaviour
 
         foreach (TableObject tableObject in objectsByCell.Values)
         {
-            if (tableObject is CarInteraction car && car.CarType == carType)
+            if (tableObject is CarInteraction car && car.CarType == carType && !IsPipeLocked(car) && !IsActivePipeKey(car))
             {
                 matchingCars.Add(car);
             }
@@ -428,7 +458,7 @@ public sealed class TableManager : MonoBehaviour
 
         foreach (KeyValuePair<Vector2Int, TableObject> entry in objectsByCell)
         {
-            if (entry.Value is CarInteraction car && car.ObjectState == ObjectState.Car)
+            if (entry.Value is CarInteraction car && car.ObjectState == ObjectState.Car && !IsPipeLocked(car) && !IsActivePipeKey(car))
             {
                 carCells.Add(entry.Key);
                 cars.Add(car);
@@ -566,9 +596,93 @@ public sealed class TableManager : MonoBehaviour
                 continue;
             }
 
-            CarState state = TryGetRemovalPath(entry.Key, carInteraction, out _) ? CarState.Removable : CarState.Blocked;
+            CarState state = !IsPipeLocked(carInteraction) && TryGetRemovalPath(entry.Key, carInteraction, out _) ? CarState.Removable : CarState.Blocked;
 
             carInteraction.SetState(state);
+        }
+    }
+
+    public void RegisterPipe(CarInteraction keyCar, IReadOnlyList<CarInteraction> blockedCars)
+    {
+        ChangeCount(activePipeKeyCounts, keyCar, 1);
+
+        foreach (CarInteraction car in blockedCars)
+        {
+            ChangeCount(pipeLockCounts, car, 1);
+            car.SetState(CarState.Blocked);
+            car.gameObject.SetActive(false);
+        }
+    }
+
+    public List<CarInteraction> UnlockPipe(CarInteraction keyCar, IReadOnlyList<CarInteraction> blockedCars)
+    {
+        var revealedCars = new List<CarInteraction>();
+        ChangeCount(activePipeKeyCounts, keyCar, -1);
+
+        foreach (CarInteraction car in blockedCars)
+        {
+            ChangeCount(pipeLockCounts, car, -1);
+
+            if (car != null && !IsPipeLocked(car))
+            {
+                car.gameObject.SetActive(true);
+                pipeRevealLockedCars.Add(car);
+                revealedCars.Add(car);
+            }
+        }
+
+        return revealedCars;
+    }
+
+    public void CompletePipeUnlock(IReadOnlyList<CarInteraction> revealedCars)
+    {
+        foreach (CarInteraction car in revealedCars)
+        {
+            pipeRevealLockedCars.Remove(car);
+        }
+
+        RefreshCarStates();
+    }
+
+    public bool TryGetCarAtCell(Vector2Int cell, out CarInteraction car)
+    {
+        if (objectsByCell.TryGetValue(cell, out TableObject tableObject) && tableObject is CarInteraction carInteraction)
+        {
+            car = carInteraction;
+            return true;
+        }
+
+        car = null;
+        return false;
+    }
+
+    private bool IsPipeLocked(CarInteraction car)
+    {
+        return car != null && ((pipeLockCounts.TryGetValue(car, out int count) && count > 0) || pipeRevealLockedCars.Contains(car));
+    }
+
+    private bool IsActivePipeKey(CarInteraction car)
+    {
+        return car != null && activePipeKeyCounts.TryGetValue(car, out int count) && count > 0;
+    }
+
+    private static void ChangeCount(Dictionary<CarInteraction, int> counts, CarInteraction car, int change)
+    {
+        if (car == null)
+        {
+            return;
+        }
+
+        counts.TryGetValue(car, out int currentCount);
+        int newCount = currentCount + change;
+
+        if (newCount > 0)
+        {
+            counts[car] = newCount;
+        }
+        else
+        {
+            counts.Remove(car);
         }
     }
 
@@ -607,6 +721,19 @@ public sealed class TableManager : MonoBehaviour
 
     private void ClearGrid()
     {
+        foreach (PipeObstacle pipeObstacle in pipeObstacles)
+        {
+            if (pipeObstacle == null)
+            {
+                continue;
+            }
+
+            pipeObstacle.Dispose();
+            Destroy(pipeObstacle.gameObject);
+        }
+
+        pipeObstacles.Clear();
+
         foreach (TableObject tableObject in objectsByCell.Values)
         {
             if (tableObject == null)
@@ -624,6 +751,9 @@ public sealed class TableManager : MonoBehaviour
 
         objectsByCell.Clear();
         originalCellsByCar.Clear();
+        pipeLockCounts.Clear();
+        activePipeKeyCounts.Clear();
+        pipeRevealLockedCars.Clear();
         powerUpLockedNeighbors.Clear();
         levelCompletionRaised = false;
         isCarRemovalInProgress = false;

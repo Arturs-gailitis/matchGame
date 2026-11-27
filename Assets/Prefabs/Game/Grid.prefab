@@ -55,6 +55,7 @@ MonoBehaviour:
   waitingAreaManager: {fileID: 4005}
   carPrefab: {fileID: 1000, guid: 2891af36d17b4ea4b1d286c3bfb3f2e9, type: 3}
   wallPrefab: {fileID: 1000, guid: 5e3a9c7f1b2d46e8a0f4c6d9b7e15382, type: 3}
+  pipeKeySprite: {fileID: 21300000, guid: 86d066299ddf48e8a53cc5bf49c28a6f, type: 3}
   levelNumber: 1
   carSpriteConfig: {fileID: 4900000, guid: 65dad06a4583a0f4dad2f66fabb354e7, type: 3}
   carSprites:
