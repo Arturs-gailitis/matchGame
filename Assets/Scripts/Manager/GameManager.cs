@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,8 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class GameManager : MonoBehaviour
 {
+    public event Action LevelAttemptStarted;
+
     [SerializeField] private TableManager tableManager;
     [SerializeField] private WaitingAreaManager waitingAreaManager;
     [SerializeField] private Text levelText;
@@ -23,6 +26,7 @@ public sealed class GameManager : MonoBehaviour
         currentLevel = PlayerStorage.GetCurrentLevel();
         UpdateLevelText();
         tableManager.SetLevel(currentLevel);
+        LevelAttemptStarted?.Invoke();
     }
 
     private void OnDestroy()
@@ -61,6 +65,7 @@ public sealed class GameManager : MonoBehaviour
 
         UpdateLevelText();
         tableManager.SetLevel(currentLevel);
+        LevelAttemptStarted?.Invoke();
     }
 
     public int GetCurrentLevelReward()
@@ -91,6 +96,7 @@ public sealed class GameManager : MonoBehaviour
     {
         waitingAreaManager.ClearCars();
         tableManager.SetLevel(currentLevel);
+        LevelAttemptStarted?.Invoke();
     }
 
     private void UpdateLevelText()

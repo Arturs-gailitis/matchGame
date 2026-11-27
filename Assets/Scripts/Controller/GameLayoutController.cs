@@ -16,6 +16,7 @@ public sealed class GameLayoutController : MonoBehaviour
     private GameObject levelLostPopupInstance;
     private GameObject levelWonPopupInstance;
     private LayoutManager layoutManager;
+    private bool levelAttemptResolved;
 
     public void Initialize(LayoutManager manager)
     {
@@ -38,6 +39,11 @@ public sealed class GameLayoutController : MonoBehaviour
         {
             tableManager.LevelCompleted += ShowLevelWonPopup;
         }
+
+        if (gameManager != null)
+        {
+            gameManager.LevelAttemptStarted += HandleLevelAttemptStarted;
+        }
     }
 
     private void OnDestroy()
@@ -56,6 +62,13 @@ public sealed class GameLayoutController : MonoBehaviour
         {
             tableManager.LevelCompleted -= ShowLevelWonPopup;
         }
+
+        if (gameManager != null)
+        {
+            gameManager.LevelAttemptStarted -= HandleLevelAttemptStarted;
+        }
+
+        EndUnresolvedLevelAttempt();
     }
 
     private void ShowSettings()
@@ -72,7 +85,7 @@ public sealed class GameLayoutController : MonoBehaviour
 
             if (settingsController != null)
             {
-                settingsController.Initialize(layoutManager);
+                settingsController.Initialize(layoutManager, this);
             }
         }
 
@@ -89,7 +102,7 @@ public sealed class GameLayoutController : MonoBehaviour
             return;
         }
 
-        PlayerEnergyStorage.TryDecreaseEnergy();
+        EndUnresolvedLevelAttempt();
 
         if (levelLostPopupInstance == null && levelLostPopupPrefab != null)
         {
@@ -110,6 +123,8 @@ public sealed class GameLayoutController : MonoBehaviour
 
     private void ShowLevelWonPopup() 
     {
+        levelAttemptResolved = true;
+
         if (levelWonPopupInstance == null && levelWonPopupPrefab != null)
         {
             levelWonPopupInstance = Instantiate(levelWonPopupPrefab, transform, false);
@@ -125,5 +140,21 @@ public sealed class GameLayoutController : MonoBehaviour
         {
             levelWonPopupInstance.SetActive(true);
         }
+    }
+
+    public void EndUnresolvedLevelAttempt()
+    {
+        if (levelAttemptResolved)
+        {
+            return;
+        }
+
+        levelAttemptResolved = true;
+        PlayerEnergyStorage.TryDecreaseEnergy();
+    }
+
+    private void HandleLevelAttemptStarted()
+    {
+        levelAttemptResolved = false;
     }
 }

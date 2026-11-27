@@ -8,11 +8,13 @@ public sealed class SettingsPopupController : MonoBehaviour
     [SerializeField] private Button exitButton;
 
     private LayoutManager layoutManager;
+    private GameLayoutController gameLayoutController;
     private bool exitRequested;
 
-    public void Initialize(LayoutManager manager)
+    public void Initialize(LayoutManager manager, GameLayoutController gameController)
     {
         layoutManager = manager;
+        gameLayoutController = gameController;
     }
 
     private void Awake()
@@ -60,7 +62,7 @@ public sealed class SettingsPopupController : MonoBehaviour
         }
 
         exitRequested = true;
-        PlayerEnergyStorage.TryDecreaseEnergy();
+        gameLayoutController?.EndUnresolvedLevelAttempt();
         layoutManager.ShowLayout(LayoutType.Lobby);
     }
 }
