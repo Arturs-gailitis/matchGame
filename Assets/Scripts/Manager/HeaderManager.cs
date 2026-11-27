@@ -167,7 +167,8 @@ public sealed class HeaderManager : MonoBehaviour
             case HeaderSectionType.Energy:
                 int energy = PlayerEnergyStorage.GetEnergy();
                 int seconds = PlayerEnergyStorage.GetSecondsUntilNextEnergy();
-                section.SetEnergyContent(energyIcon, energy, $"{seconds / 60:00}:{seconds % 60:00}");
+                string recoveryTime = energy >= PlayerEnergyStorage.MaxEnergy ? "MAX" : $"{seconds / 60:00}:{seconds % 60:00}";
+                section.SetEnergyContent(energyIcon, energy, recoveryTime);
                 break;
             default:
                 Debug.LogWarning($"HeaderManager: unsupported section type {sectionType}.", this);
